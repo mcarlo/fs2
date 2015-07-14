@@ -5,6 +5,7 @@
 setup <- function(weekFilename){
 #setupComplete = FALSE
 
+  setwd("C:/Users/Anichini/Documents")
   #setwd("D:/WTP")
 
   ### set up weekFilename = "2014week17.csv"
@@ -80,7 +81,7 @@ setup <- function(weekFilename){
   simRanks <- apply(simRaw, 2, rank) + premiumPts # max(apply(simRanks, 2, max))
   rm(simRaw); rm(simPrior); rm(simFavs); rm(simDogs)
 
-  simOutcomes2 <- matrix(1*(runif(games * 2000) <= winProb), nrow = games, ncol = 2000)
+  simOutcomes2 <<- matrix(1*(runif(games * 2000) <= winProb), nrow = games, ncol = 2000)
 
   myRanks <- rank(winProb)+premiumPts
 
@@ -109,7 +110,7 @@ simulatePool <- function(maxIter = 2000, numFans = 90,
   tempPlace <- rep(0, 14)
   tempShow <- rep(0, 14)
 
-  set.seed(as.numeric(Sys.time()))
+  set.seed(numFans)
 
   for (i in 1:maxIter){ # i = 1; numFans = 1
     #numFans = 90; i = 2
@@ -226,7 +227,13 @@ top3Dollars <- function(){
   winnings[which(rank(winnings) == 12)]
 }
 
+userPicks <- function(picksVector){
+  #picksVector <- jokerPicks
+  userFavs <- (picksVector %in% favorites) * 1
+  userDogs <- (picksVector %in% dogs) * 1
+  userPoints <<- t(userFavs * (games + premiumPts):(premiumPts+1)) %*% simOutcomes2 + t(userDogs * (games + premiumPts):(premiumPts+1)) %*% (simOutcomes2  - 1)
 
+}
 
 save.image("fsims2.RData")
 
@@ -234,17 +241,18 @@ save.image("fsims2.RData")
 # rm(list = ls())
 load("fsims2.RData")
 
-setup("2014week11.csv") # 2000 sufficient
-setup("2014week12.csv") # 2000 sufficient
-setup("2014week13.csv") # 2000 sufficient
-setup("2014week14.csv") # 2000 sufficient
-setup("2014week15.csv") # 2000 sufficient
-setup("2014week16.csv") # 20000 sufficient
+# setup("2014week11.csv") # 2000 sufficient
+# setup("2014week12.csv") # 2000 sufficient
+# setup("2014week13.csv") # 2000 sufficient
+# setup("2014week14.csv") # 2000 sufficient
+# setup("2014week15.csv") # 2000 sufficient
+# setup("2014week16.csv") # 20000 sufficient
 setup("2014week17.csv") # 20000 sufficient
 
-system.time(simulatePool(maxIter = 2000, numFans = 10, payouts = c(100, 0, 0)))
+system.time(simulatePool(maxIter = 10000, numFans = 202, payouts = c(220, 100, 50)))
 
 topWin <- which(winnings == max(winnings))
 topMoney <- which(inTheMoney == max(inTheMoney))
 strategies[, topWin]
 strategies[, topMoney]
+favorites
