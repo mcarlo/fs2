@@ -3,7 +3,7 @@
 # Set directory and read in files
 #
 setup <- function(weekFilename){
-#setupComplete = FALSE
+  #setupComplete = FALSE
 
   #setwd("C:/Users/Anichini/Documents")
   setwd("D:/WTP")
@@ -102,8 +102,8 @@ simParams <- function(maxiter = 2000, numFans = 90){
   suppressMessages(require(foreach))
   resultIndex <<- sample(1:2000, maxiter, replace = TRUE)
   fanIndex <<- foreach(resultIndex, .combine = rbind) %do% sample(1:2000, numFans, replace = T)
-  totalPointsIter <<- matrix(foreach(i = 1:2000, .combine = rbind) %do% 
-    totalPoints[resultIndex[i], fanIndex[i,]], nrow = 2000, ncol = numFans)
+  totalPointsIter <<- matrix(foreach(i = 1:2000, .combine = rbind) %do%
+                               totalPoints[resultIndex[i], fanIndex[i,]], nrow = 2000, ncol = numFans)
   WTP <<- 1*(myPoints[resultIndex] > apply(totalPointsIter, 1, max))
 }
 
@@ -182,7 +182,7 @@ simulatePool <- function(maxIter = 2000, numFans = 90,
     opp12Show <- 1*(sum(upsetPointsMatrix[resultIndex, 12] < totalPointsIter) == 2)
     opp13Show <- 1*(sum(upsetPointsMatrix[resultIndex, 13] < totalPointsIter) == 2)
 
-#    myPointsVector = myPoints; upsetPointsMatrix = upsetPoints
+    #    myPointsVector = myPoints; upsetPointsMatrix = upsetPoints
     temp <- temp + c(WTP, opp1Win, opp2Win, opp3Win, opp4Win, opp5Win, opp6Win,
                      opp7Win, opp8Win, opp9Win, opp10Win, opp11Win, opp12Win, opp13Win)
 
@@ -215,8 +215,8 @@ simulatePool <- function(maxIter = 2000, numFans = 90,
   inTheMoney <<- round(apply(resultsMatrix %*% (1*(payouts > 0)), 1, sum), 2)
 
   colnames(winnings) <<- c("WTP", "Fav", "Fav-1", "Fav-2", "Fav-3", "Fav-4",
-                          "Fav-5", "Fav-6", "Fav-7", "Fav-8", "Fav-9",
-                          "Fav-10", "Fav-11", "Fav-12")
+                           "Fav-5", "Fav-6", "Fav-7", "Fav-8", "Fav-9",
+                           "Fav-10", "Fav-11", "Fav-12")
   rownames(resultsMatrix) <<- colnames(winnings)
   #print(resultsMatrix)
   print(rbind(round(winnings, 2), round(apply(resultsMatrix, 1, sum), 1)))
