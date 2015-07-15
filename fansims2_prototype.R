@@ -5,8 +5,8 @@
 setup <- function(weekFilename){
 #setupComplete = FALSE
 
-  setwd("C:/Users/Anichini/Documents")
-  #setwd("D:/WTP")
+  #setwd("C:/Users/Anichini/Documents")
+  setwd("D:/WTP")
 
   ### set up weekFilename = "2014week17.csv"
   weekFile <- read.csv(weekFilename, stringsAsFactors = F)
@@ -96,6 +96,15 @@ setup <- function(weekFilename){
 
   setupComplete = TRUE
 
+}
+
+simParams <- function(maxiter = 2000, numFans = 90){
+  suppressMessages(require(foreach))
+  resultIndex <<- sample(1:2000, maxiter, replace = TRUE)
+  fanIndex <<- foreach(resultIndex, .combine = rbind) %do% sample(1:2000, numFans, replace = T)
+  totalPointsIter <<- matrix(foreach(i = 1:2000, .combine = rbind) %do% 
+    totalPoints[resultIndex[i], fanIndex[i,]], nrow = 2000, ncol = numFans)
+  WTP <<- 1*(myPoints[resultIndex] > apply(totalPointsIter, 1, max))
 }
 
 simulatePool <- function(maxIter = 2000, numFans = 90,
@@ -248,6 +257,8 @@ load("fsims2.RData")
 # setup("2014week15.csv") # 2000 sufficient
 # setup("2014week16.csv") # 20000 sufficient
 setup("2014week17.csv") # 20000 sufficient
+simParams()
+
 
 system.time(simulatePool(maxIter = 10000, numFans = 202, payouts = c(220, 100, 50)))
 
