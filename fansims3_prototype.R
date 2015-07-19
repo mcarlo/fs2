@@ -5,8 +5,8 @@
 setup <- function(weekFilename){
 #setupComplete = FALSE
 
-  setwd("C:/Users/Anichini/Documents")
-  #setwd("D:/WTP")
+  #setwd("C:/Users/Anichini/Documents")
+  setwd("D:/WTP")
 
   ### set up weekFilename = "2014week17.csv"
   weekFile <- read.csv(weekFilename, stringsAsFactors = F)
@@ -83,7 +83,7 @@ setup <- function(weekFilename){
 
   simOutcomes2 <<- matrix(1*(runif(games * 2000) <= winProb), nrow = games, ncol = 2000)
 
-  myRanks <- rank(winProb)+premiumPts
+  myRanks <- rank(winProb, ties.method = "random")+premiumPts
 
   myPoints <<- as.vector(t(myRanks) %*% simOutcomes2) # * myRanks
 
@@ -98,9 +98,6 @@ setup <- function(weekFilename){
 
 }
 
-rankN <- function(x, n) {x[order(x, decreasing = T)][n]}
-YrankN <- function(x, y, n) {sum(x > y) == n - 1}
-
 simParams <- function(maxiter = 2000, numFans = 90){
   suppressMessages(require(foreach))
   resultIndex <<- sample(1:2000, maxiter, replace = TRUE)
@@ -109,107 +106,24 @@ simParams <- function(maxiter = 2000, numFans = 90){
     totalPoints[resultIndex[i], fanIndex[i,]], nrow = 2000, ncol = numFans)
 }
 
+rankVinM_Q <- function(vec = myPointsVector[resultIndex], pointsMtrx = totalPointsIter){
+  temp <- -matrix(cbind(vec, pointsMtrx), ncol = dim(pointsMtrx)[2] + 1)
+  rankM <- t(apply(temp, 1, rank, ties.method = "min"))[, 1]
+}
+
 simulatePool <- function(maxIter = 2000, numFans = 90,
-                         payouts = c(100, 0, 0), totalPointsMatrix = totalPoints,
+                         payouts = c(100, 0, 0), totalPointsMatrix = totalPointsIter,
                          myPointsVector = myPoints, upsetPointsMatrix = upsetPoints){
 
   stratWins <- rep(0, 14)
   stratPlace <- rep(0, 14)
   stratShow <- rep(0, 14)
-
-#   temp <- rep(0, 14)
-#   tempPlace <- rep(0, 14)
-#   tempShow <- rep(0, 14)
-
-  suppressMessages(require(parallel)); suppressMessages(require(doParallel))
-
-  WTP <- 1*(myPointsVector[resultIndex] > apply(totalPointsIter, 1, max))
-  opp1Win <- 1*(upsetPointsMatrix[resultIndex, 1] > apply(totalPointsIter, 1, max))
-  opp2Win <- 1*(upsetPointsMatrix[resultIndex, 2] > apply(totalPointsIter, 1, max))
-  opp3Win <- 1*(upsetPointsMatrix[resultIndex, 3] > apply(totalPointsIter, 1, max))
-  opp4Win <- 1*(upsetPointsMatrix[resultIndex, 4] > apply(totalPointsIter, 1, max))
-  opp5Win <- 1*(upsetPointsMatrix[resultIndex, 5] > apply(totalPointsIter, 1, max))
-
-  opp6Win <- 1*(upsetPointsMatrix[resultIndex, 6] > apply(totalPointsIter, 1, max))
-  opp7Win <- 1*(upsetPointsMatrix[resultIndex, 7] > apply(totalPointsIter, 1, max))
-  opp8Win <- 1*(upsetPointsMatrix[resultIndex, 8] > apply(totalPointsIter, 1, max))
-  opp9Win <- 1*(upsetPointsMatrix[resultIndex, 9] > apply(totalPointsIter, 1, max))
-  opp10Win <- 1*(upsetPointsMatrix[resultIndex, 10] > apply(totalPointsIter, 1, max))
-
-  opp11Win <- 1*(upsetPointsMatrix[resultIndex, 11] > apply(totalPointsIter, 1, max))
-  opp12Win <- 1*(upsetPointsMatrix[resultIndex, 12] > apply(totalPointsIter, 1, max))
-  opp13Win <- 1*(upsetPointsMatrix[resultIndex, 13] > apply(totalPointsIter, 1, max))
-
-  stratWins <- apply(cbind(WTP, opp1Win, opp2Win, opp3Win, opp4Win, opp5Win, opp6Win,
-                 opp7Win, opp8Win, opp9Win, opp10Win, opp11Win, opp12Win, opp13Win), 2, sum)
-
-  rankN <- function(x, n) {x[order(x, decreasing = T)][n]}
-  YrankN <- function(x, y, n) {sum(x > y) == n - 1}
-
-  cl = makePSOCKcluster(2)
-  registerDoParallel(cl, cores = 3)
-  tpm <- totalPointsIter
-  myP <- myPoints
-  WTPplace <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = myP[i], n = 2) * 1
-
-  opp1Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 1], n = 2) * 1
-
-  opp2Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 2], n = 2) * 1
-
-  opp3Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 3], n = 2) * 1
-
-  opp4Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 4], n = 2) * 1
-
-  opp5Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 5], n = 2) * 1
-
-  opp6Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 6], n = 2) * 1
-
-  opp7Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 7], n = 2) * 1
-
-  opp8Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 8], n = 2) * 1
-
-  opp9Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 9], n = 2) * 1
-
-  opp10Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 10], n = 2) * 1
-
-  opp11Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 11], n = 2) * 1
-
-  opp12Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 12], n = 2) * 1
-
-  opp13Place <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 13], n = 2) * 1
-
-  stratPlace <- apply(cbind(WTPplace, opp1Place, opp2Place, opp3Place, opp4Place, opp5Place, opp6Place, opp7Place, opp8Place, opp9Place, opp10Place, opp11Place, opp12Place, opp13Place), 2, sum)
-
-
-  WTPShow <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = myP[i], n = 3) * 1
-
-  opp1Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 1], n = 3) * 1
-
-  opp2Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 2], n = 3) * 1
-
-  opp3Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 3], n = 3) * 1
-
-  opp4Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 4], n = 3) * 1
-
-  opp5Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 5], n = 3) * 1
-
-  opp6Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 6], n = 3) * 1
-
-  opp7Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 7], n = 3) * 1
-
-  opp8Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 8], n = 3) * 1
-
-  opp9Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 9], n = 3) * 1
-
-  opp10Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 10], n = 3) * 1
-
-  opp11Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 11], n = 3) * 1
-
-  opp12Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 12], n = 3) * 1
-
-  opp13Show <- foreach(i = 1:2000, .combine = c) %dopar% YrankN(tpm[i,], y = upsetPointsMatrix[i, 13], n = 3) * 1
-
-  stratShow <- apply(cbind(WTPShow, opp1Show, opp2Show, opp3Show, opp4Show, opp5Show, opp6Show, opp7Show, opp8Show, opp9Show, opp10Show, opp11Show, opp12Show, opp13Show), 2, sum)
+  stratMatrix <- matrix(cbind(myPointsVector[resultIndex], upsetPointsMatrix[resultIndex,]), nrow = maxIter)
+  
+  system.time(rankMatrix <- apply(stratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix))
+  stratWins <- apply(rankMatrix[, 1:14] == 1, 2, sum)
+  stratPlace <- apply(rankMatrix[, 1:14] == 2, 2, sum)
+  stratShow <- apply(rankMatrix[, 1:14] == 3, 2, sum)
 
   resultsMatrix <<- as.matrix(cbind(stratWins, stratPlace, stratShow), nrow = 6, ncol = 3) * 17.0 / maxIter
   winnings <<- round(as.data.frame(t((resultsMatrix %*% payouts))), 1)
@@ -226,15 +140,15 @@ simulatePool <- function(maxIter = 2000, numFans = 90,
 }
 
 top3Money <- function(){
-  inTheMoney[which(rank(inTheMoney) == 14) ]
-  inTheMoney[which(rank(inTheMoney) == 13) ]
-  inTheMoney[which(rank(inTheMoney) == 12) ]
+  inTheMoney[which(rank(-inTheMoney) == 1) ]
+  inTheMoney[which(rank(-inTheMoney) == 2) ]
+  inTheMoney[which(rank(-inTheMoney) == 3) ]
 }
 
 top3Dollars <- function(){
-  winnings[which(rank(winnings) == 14)]
-  winnings[which(rank(winnings) == 13)]
-  winnings[which(rank(winnings) == 12)]
+  winnings[which(rank(-winnings) == 1)]
+  winnings[which(rank(-winnings) == 2)]
+  winnings[which(rank(-winnings) == 3)]
 }
 
 userPicks <- function(picksVector){
@@ -251,13 +165,7 @@ save.image("fsims2.RData")
 # rm(list = ls())
 load("fsims2.RData")
 
-# setup("2014week11.csv") # 2000 sufficient
-# setup("2014week12.csv") # 2000 sufficient
-# setup("2014week13.csv") # 2000 sufficient
-# setup("2014week14.csv") # 2000 sufficient
-# setup("2014week15.csv") # 2000 sufficient
-# setup("2014week16.csv") # 20000 sufficient
-setup("2014week17.csv") # 20000 sufficient
+setup("2014week11.csv") # 20000 sufficient
 
 simParams(numFans = 190)
 system.time(simulatePool(maxIter = 2000, numFans = 190, payouts = c(220, 100, 50)))
