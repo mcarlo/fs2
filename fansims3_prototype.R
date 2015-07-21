@@ -111,6 +111,12 @@ rankVinM_Q <- function(vec = myPointsVector[resultIndex], pointsMtrx = totalPoin
   rankM <- t(apply(temp, 1, rank, ties.method = "min"))[, 1]
 }
 
+rankFor <- function(vec = myPointsVector[resultIndex], pointsMtrx = totalPointsIter){
+  temp <- -matrix(cbind(vec, pointsMtrx), ncol = dim(pointsMtrx)[2] + 1)
+  rankM <- t(foreach(i = 1:dim(pointsMtrx)[1], .combine = c) %do% 
+               rank(temp[i,], ties.method = "min")[1])
+}
+
 simulatePool <- function(maxIter = 2000, numFans = 90,
                          payouts = c(100, 0, 0), totalPointsMatrix = totalPointsIter,
                          myPointsVector = myPoints, upsetPointsMatrix = upsetPoints){
@@ -120,7 +126,7 @@ simulatePool <- function(maxIter = 2000, numFans = 90,
   stratShow <- rep(0, 14)
   stratMatrix <- matrix(cbind(myPointsVector[resultIndex], upsetPointsMatrix[resultIndex,]), nrow = maxIter)
   
-  system.time(rankMatrix <- apply(stratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix))
+  rankMatrix <- apply(stratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix)
   stratWins <- apply(rankMatrix[, 1:14] == 1, 2, sum)
   stratPlace <- apply(rankMatrix[, 1:14] == 2, 2, sum)
   stratShow <- apply(rankMatrix[, 1:14] == 3, 2, sum)
@@ -169,6 +175,8 @@ setup("2014week11.csv") # 20000 sufficient
 
 simParams(numFans = 190)
 system.time(simulatePool(maxIter = 2000, numFans = 190, payouts = c(220, 100, 50)))
+system.time(simulatePool2(maxIter = 2000, numFans = 190, payouts = c(220, 100, 50)))
+
 
 topWin <- which(winnings == max(winnings))
 topMoney <- which(inTheMoney == max(inTheMoney))
