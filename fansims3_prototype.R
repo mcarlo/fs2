@@ -103,18 +103,12 @@ simParams <- function(maxiter = 2000, numFans = 90){
   resultIndex <<- sample(1:2000, maxiter, replace = TRUE)
   fanIndex <<- foreach(resultIndex, .combine = rbind) %do% sample(1:2000, numFans, replace = T)
   totalPointsIter <<- matrix(foreach(i = 1:2000, .combine = rbind) %do%
-    totalPoints[resultIndex[i], fanIndex[i,]], nrow = 2000, ncol = numFans)
+                               totalPoints[resultIndex[i], fanIndex[i,]], nrow = 2000, ncol = numFans)
 }
 
 rankVinM_Q <- function(vec = myPointsVector[resultIndex], pointsMtrx = totalPointsIter){
   temp <- -matrix(cbind(vec, pointsMtrx), ncol = dim(pointsMtrx)[2] + 1)
   rankM <- t(apply(temp, 1, rank, ties.method = "min"))[, 1]
-}
-
-rankFor <- function(vec = myPointsVector[resultIndex], pointsMtrx = totalPointsIter){
-  temp <- -matrix(cbind(vec, pointsMtrx), ncol = dim(pointsMtrx)[2] + 1)
-  rankM <- t(foreach(i = 1:dim(pointsMtrx)[1], .combine = c) %do% 
-               rank(temp[i,], ties.method = "min")[1])
 }
 
 simulatePool <- function(maxIter = 2000, numFans = 90,
@@ -164,6 +158,14 @@ userPicks <- function(picksVector){
   userPoints <<- t(userFavs * (games + premiumPts):(premiumPts+1)) %*% simOutcomes2 + t(userDogs * (games + premiumPts):(premiumPts+1)) %*% (simOutcomes2  - 1)
 
 }
+setup("2014week11.csv") # 20000 sufficient
+
+simParams(numFans = 190)
+simulatePool(maxIter = 2000, numFans = 190, payouts = c(220, 100, 50))
+
+
+topWin <- order(-winnings[1,])[1:3]
+topMoney <- order(-inTheMoney)[1:3]
 
 save.image("fsims2.RData")
 
@@ -171,15 +173,11 @@ save.image("fsims2.RData")
 # rm(list = ls())
 load("fsims2.RData")
 
-setup("2014week11.csv") # 20000 sufficient
-
-simParams(numFans = 190)
-system.time(simulatePool(maxIter = 2000, numFans = 190, payouts = c(220, 100, 50)))
-system.time(simulatePool2(maxIter = 2000, numFans = 190, payouts = c(220, 100, 50)))
+simulatePool(maxIter = 2000, numFans = 190, payouts = c(220, 100, 50))
 
 
-topWin <- which(winnings == max(winnings))
-topMoney <- which(inTheMoney == max(inTheMoney))
+topWin <- order(-winnings[1,])[1:3]
+topMoney <- order(-inTheMoney)[1:3]
 strategies[, topWin]
 strategies[, topMoney]
 favorites
