@@ -83,7 +83,7 @@ setup <- function(weekFilename){
 
   simOutcomes2 <<- matrix(1*(runif(games * 2000) <= winProb), nrow = games, ncol = 2000)
 
-  myRanks <- rank(winProb, ties.method = "random")+premiumPts
+  myRanks <<- rank(winProb, ties.method = "random")+premiumPts
 
   myPoints <<- as.vector(t(myRanks) %*% simOutcomes2) # * myRanks
 
@@ -134,8 +134,8 @@ simulatePool <- function(maxIter = 2000, numFans = 90,
                           "Fav-10", "Fav-11", "Fav-12")
   rownames(resultsMatrix) <<- colnames(winnings)
   #print(resultsMatrix)
-  print(rbind(round(winnings, 2), round(apply(resultsMatrix, 1, sum), 1)))
-  cat(paste0("maxIterations = ", maxIter))
+#   print(rbind(round(winnings, 2), round(apply(resultsMatrix, 1, sum), 1)))
+#   cat(paste0("maxIterations = ", maxIter))
 
 }
 
