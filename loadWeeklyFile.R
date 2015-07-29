@@ -1,3 +1,5 @@
+library(compiler)
+source("data_to_load.R")
 processFile <- function(weekFilename){
   #rm(list = ls())
   load("fansimsSkeleton.RData")
@@ -69,8 +71,56 @@ processFile <- function(weekFilename){
   
 }
 
-library(compiler)
 cmpProc <- cmpfun(processFile)
 
-system.time(processFile("2014week17.csv"))
-system.time(cmpProc("2014week17.csv"))
+simParams <- function(numFans = 90){
+  suppressMessages(require(foreach))
+  # resultIndex <<- sample(1:2000, maxiter, replace = TRUE)
+  fanIndex <<- foreach(resultIndex, .combine = rbind) %do% sample(1:2000, numFans, replace = T)
+  totalPointsIter <<- matrix(foreach(i = 1:2000, .combine = rbind) %do%
+                               totalPoints[resultIndex[i], fanIndex[i,]], nrow = 2000, ncol = numFans)
+}
+
+rankVinM_Q <- function(vec = myPointsVector[resultIndex], pointsMtrx = totalPointsIter){
+  temp <- -matrix(cbind(vec, pointsMtrx), ncol = dim(pointsMtrx)[2] + 1)
+  rankM <- t(apply(temp, 1, rank, ties.method = "min"))[, 1]
+}
+
+simulatePool <- function(numFans = 100,
+                         payouts = c(100, 0, 0), totalPointsMatrix = totalPointsIter,
+                         myPointsVector = myPoints, upsetPointsMatrix = upsetPoints){
+  
+  stratWins <- rep(0, 14)
+  stratPlace <- rep(0, 14)
+  stratShow <- rep(0, 14)
+  stratMatrix <- matrix(cbind(myPointsVector[resultIndex], upsetPointsMatrix[resultIndex,]), nrow = maxIter)
+  
+  rankMatrix <- apply(stratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix)
+  stratWins <- colSums(rankMatrix[, 1:14] == 1)
+  stratPlace <- colSums(rankMatrix[, 1:14] == 2)
+  stratShow <- colSums(rankMatrix[, 1:14] == 3)
+  
+  resultsMatrix <<- as.matrix(cbind(stratWins, stratPlace, stratShow), nrow = 6, ncol = 3) * 17.0 / maxIter
+  winnings <<- round(as.data.frame(t((resultsMatrix %*% payouts))), 1)
+  inTheMoney <<- round(rowSums(resultsMatrix %*% (1*(payouts > 0))), 2)
+  
+  colnames(winnings) <<- c("WTP", "Fav", "Fav-1", "Fav-2", "Fav-3", "Fav-4",
+                           "Fav-5", "Fav-6", "Fav-7", "Fav-8", "Fav-9",
+                           "Fav-10", "Fav-11", "Fav-12")
+  rownames(resultsMatrix) <<- colnames(winnings)
+  #print(resultsMatrix)
+  #   print(rbind(round(winnings, 2), round(apply(resultsMatrix, 1, sum), 1)))
+  
+}
+
+top3Money <- function(){
+  inTheMoney[which(rank(-inTheMoney) == 1) ]
+  inTheMoney[which(rank(-inTheMoney) == 2) ]
+  inTheMoney[which(rank(-inTheMoney) == 3) ]
+}
+
+top3Dollars <- function(){
+  winnings[which(rank(-winnings) == 1)]
+  winnings[which(rank(-winnings) == 2)]
+  winnings[which(rank(-winnings) == 3)]
+}

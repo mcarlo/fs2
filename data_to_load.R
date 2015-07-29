@@ -38,5 +38,5 @@ simPrior <- matrix(qbinom(simRand[1:games,], games, 0.5, lower.tail = T), nrow =
 simRaw <- (simPrior + simFavs *simPicks + simDogs *(1 - simPicks))/2
 
 fanIndex <- sample(1:2000, 2000, replace = T)
-
+resultIndex <<- sample(1:2000, 2000, replace = TRUE)
 save.image("fansimsSkeleton.RData")
