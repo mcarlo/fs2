@@ -1,17 +1,17 @@
-Victor,WinProbability,Confidence,FanProb,DogProb,FavConf,DogConf
-Dallas,0.603756411,7,0.77,0.23,6.7,3.6
-Indianapolis,0.615770827,9,0.94,0.06,9,4
-@Detroit,0.773844723,13,0.99,0.01,11.6,5.3
-@Miami,0.579427511,4,0.53,0.47,4.4,4.5
-Houston,0.657978774,10,0.95,0.05,9.2,4.6
-@Cincinnati,0.596542689,6,0.68,0.32,4.8,4
-St. Louis,0.581915473,5,0.86,0.14,7.2,4.3
-N.Y. Giants,0.539881051,3,0.68,0.32,4.4,3.9
-@Minnesota,0.676229199,11,0.95,0.05,7.7,4.1
-@New Orleans,0.775658353,14,0.99,0.01,10.5,4.7
-@Arizona,0.530011408,2,0.56,0.44,5,4.4
-@Denver,0.779391132,15,0.99,0.01,12.3,4.9
-San Francisco,0.738324585,12,0.97,0.03,11.5,4.6
-@Philadelphia,0.529920618,1,0.53,0.47,4,4.7
-New England,0.608596808,8,0.88,0.12,8.2,4
-@Green Bay,0.829478157,16,0.99,0.01,13.4,5.5
+Victor,WinProbability,Confidence,FanProb,DogProb,FavConf,DogConf,Underdog
+Dallas,0.603756411,7,0.77,0.23,6.7,3.6,@Chicago
+Indianapolis,0.615770827,9,0.94,0.06,9,4,@Cleveland
+@Detroit,0.773844723,13,0.99,0.01,11.6,5.3,Tampa Bay
+@Miami,0.579427511,4,0.53,0.47,4.4,4.5,Baltimore
+Houston,0.657978774,10,0.95,0.05,9.2,4.6,@Jacksonville
+@Cincinnati,0.596542689,6,0.68,0.32,4.8,4,Pittsburgh
+St. Louis,0.581915473,5,0.86,0.14,7.2,4.3,@Washington
+N.Y. Giants,0.539881051,3,0.68,0.32,4.4,3.9,@Tennessee
+@Minnesota,0.676229199,11,0.95,0.05,7.7,4.1,N.Y. Jets
+@New Orleans,0.775658353,14,0.99,0.01,10.5,4.7,Carolina
+@Arizona,0.530011408,2,0.56,0.44,5,4.4,Kansas City
+@Denver,0.779391132,15,0.99,0.01,12.3,4.9,Buffalo
+San Francisco,0.738324585,12,0.97,0.03,11.5,4.6,@Oakland
+@Philadelphia,0.529920618,1,0.53,0.47,4,4.7,Seattle
+New England,0.608596808,8,0.88,0.12,8.2,4,@San Diego
+@Green Bay,0.829478157,16,0.99,0.01,13.4,5.5,Atlanta
