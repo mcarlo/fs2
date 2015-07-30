@@ -18,20 +18,68 @@ processFile <- function(weekFilename){
   strategies <<- matrix(rep(favorites, 14), ncol = 14)
   
   # simulate whether fans pick the favorite
-  fanProb <- weekFile$FanProb
+  fanProb <<- weekFile$FanProb
   
   # simulate favorite confidence and underdog confidence
-  favConf <- weekFile$FavConf
-  dogConf <- weekFile$DogConf
-  
-  games <<- length(winProb)
-  premium <- 16 - games
-  prem <- FALSE
-  premiumPts <- 0 + prem * premium
+  favConf <<- weekFile$FavConf
+  dogConf <<- weekFile$DogConf
   
   oppLabel <- function(c){paste0(c, "'s opponent")}
   dogs <<- sapply(favorites, oppLabel)
   if(dim(weekFile)[2] == 8) {dogs <<- weekFile$Underdog}
+  
+  save.image("procFile.RData")
+  ### dependent matrices
+#   games <<- length(winProb)
+#   premium <<- 16 - games
+#   prem <<- FALSE
+#   premiumPts <<- 0 + prem * premium
+#   
+#   selectRows <- (1:games) 
+#   selectRowsPrem <- selectRows + (1 - prem) * premium
+#   for (j in 2:14){ # j = 2
+#     strategies[j - 1, j] <- dogs[j-1] #weekFile[1:3, ]; favorites[j]
+#     strategies[, j] <- strategies[order(-(upsetMatrix[selectRowsPrem, selectRowsPrem] + upsetDiagMatrix[selectRowsPrem, selectRowsPrem])[ , j - 1]), j]
+#   }
+#   strategies <<- strategies
+#   
+#   simPicks <- matrix((simplayerCols[selectRows, ]  < fanProb)*1, nrow = games, ncol = playerCols)
+#   
+#   simFavs <- matrix(qbinom(simRand[1:games,], games, (favConf - .5)/games, lower.tail = T), nrow = games, ncol = playerCols) + (runif(playerCols * games) - .5)
+#   # simFavs[1:10, 1:10]
+#   
+#   simDogs <- matrix(qbinom(simRand[1:games,], games, (dogConf - .5)/games, lower.tail = T), nrow = games, ncol = playerCols) + (runif(playerCols * games) - .5)
+#   simPrior <- matrix(qbinom(simRand[1:games,], games, 0.5, lower.tail = T), nrow = games, ncol = playerCols) + (runif(playerCols * games) - .5)
+#   #rm(simplayerCols); rm(simRand)
+#   
+#   simRaw <- (simPrior + simFavs *simPicks + simDogs *(1 - simPicks))/2
+#   
+#   simRanks <- apply(simRaw[selectRows,], 2, rank) + premiumPts # max(apply(simRanks, 2, max))
+#   #rm(simRaw); rm(simPrior); rm(simFavs); rm(simDogs)
+#   
+#   simOutcomes2 <<- (simOutcomes2[selectRows,] <= winProb) * 1
+#   
+#   myRanks <<- rank(winProb, ties.method = "random")+premiumPts
+#   
+#   myPoints <<- as.vector(crossprod(myRanks, simOutcomes2)) # * myRanks
+#   
+#   
+#   totalPoints <<- t(crossprod((simPicks * simRanks), simOutcomes2) + 
+#                       crossprod((1 - simPicks) * simRanks, (1 - simOutcomes2)))
+#   
+#   upsetPoints <<- t(crossprod(upsetMatrix[selectRowsPrem,selectRowsPrem], simOutcomes2) + 
+#                       crossprod(upsetDiagMatrix[selectRowsPrem,selectRowsPrem], (1 - simOutcomes2)))
+  
+}
+
+cmpProc <- cmpfun(processFile)
+
+genMtx <- function(){
+  load("procFile.RData")
+  games <<- length(winProb)
+  premium <<- 16 - games
+  prem <<- FALSE
+  premiumPts <<- 0 + prem * premium
   
   selectRows <- (1:games) 
   selectRowsPrem <- selectRows + (1 - prem) * premium
@@ -41,7 +89,6 @@ processFile <- function(weekFilename){
   }
   strategies <<- strategies
   
-  ### dependent matrices
   simPicks <- matrix((simplayerCols[selectRows, ]  < fanProb)*1, nrow = games, ncol = playerCols)
   
   simFavs <- matrix(qbinom(simRand[1:games,], games, (favConf - .5)/games, lower.tail = T), nrow = games, ncol = playerCols) + (runif(playerCols * games) - .5)
@@ -71,7 +118,8 @@ processFile <- function(weekFilename){
   
 }
 
-cmpProc <- cmpfun(processFile)
+cmpMtx <- cmpfun(genMtx)
+
 
 simParams <- function(numFans = 90){
   suppressMessages(require(foreach))
@@ -90,6 +138,8 @@ simulatePool <- function(numFans = 100,
                          payouts = c(100, 0, 0), totalPointsMatrix = totalPointsIter,
                          myPointsVector = myPoints, upsetPointsMatrix = upsetPoints){
   
+  simParams(numFans = numFans)
+  maxIter <<- 2000
   stratWins <- rep(0, 14)
   stratPlace <- rep(0, 14)
   stratShow <- rep(0, 14)
@@ -124,3 +174,9 @@ top3Dollars <- function(){
   winnings[which(rank(-winnings) == 2)]
   winnings[which(rank(-winnings) == 3)]
 }
+
+topWin <- order(-winnings[1,])[1:3]
+topMoney <- order(-inTheMoney)[1:3]
+strategies[, topWin]
+strategies[, topMoney]
+favorites
