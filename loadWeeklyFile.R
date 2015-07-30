@@ -133,6 +133,17 @@ rankVinM_Q <- function(vec = myPointsVector[resultIndex], pointsMtrx = totalPoin
   temp <- -matrix(cbind(vec, pointsMtrx), ncol = dim(pointsMtrx)[2] + 1)
   rankM <- t(apply(temp, 1, rank, ties.method = "min"))[, 1]
 }
+top3Money <- function(){
+  inTheMoney[which(rank(-inTheMoney) == 1) ]
+  inTheMoney[which(rank(-inTheMoney) == 2) ]
+  inTheMoney[which(rank(-inTheMoney) == 3) ]
+}
+
+top3Dollars <- function(){
+  winnings[which(rank(-winnings) == 1)]
+  winnings[which(rank(-winnings) == 2)]
+  winnings[which(rank(-winnings) == 3)]
+}
 
 simulatePool <- function(numFans = 100,
                          payouts = c(100, 0, 0), totalPointsMatrix = totalPointsIter,
@@ -158,25 +169,30 @@ simulatePool <- function(numFans = 100,
                            "Fav-5", "Fav-6", "Fav-7", "Fav-8", "Fav-9",
                            "Fav-10", "Fav-11", "Fav-12")
   rownames(resultsMatrix) <<- colnames(winnings)
+  top3Money()
+  top3Dollars()
+  topWin <<- order(-winnings[1,])[1:3]
+  topMoney <<- order(-inTheMoney)[1:3]
+  
   #print(resultsMatrix)
   #   print(rbind(round(winnings, 2), round(apply(resultsMatrix, 1, sum), 1)))
   
 }
 
-top3Money <- function(){
-  inTheMoney[which(rank(-inTheMoney) == 1) ]
-  inTheMoney[which(rank(-inTheMoney) == 2) ]
-  inTheMoney[which(rank(-inTheMoney) == 3) ]
-}
 
-top3Dollars <- function(){
-  winnings[which(rank(-winnings) == 1)]
-  winnings[which(rank(-winnings) == 2)]
-  winnings[which(rank(-winnings) == 3)]
-}
+###
+library(compiler)
+source("data_to_load.R")
 
-topWin <- order(-winnings[1,])[1:3]
-topMoney <- order(-inTheMoney)[1:3]
+cmpProc("2014week11.csv")
+cmpMtx()
+
+system.time(simulatePool(numFans = 25, payouts = c(225, 125, 50)))
+strategies[, topWin]
+strategies[, topMoney]
+favorites
+
+system.time(cmpsim(numFans = 25, payouts = c(225, 125, 50)))
 strategies[, topWin]
 strategies[, topMoney]
 favorites
