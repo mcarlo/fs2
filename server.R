@@ -1,32 +1,37 @@
+# rm(list = ls())
+# load("fansimsSkeleton.RData")
+# source("data_to_load.R") #getwd()
+# 
+# processFile("2014week16.csv")
+# 
+# genMtx()
+# simParams()
+# save.image("useWeeklyFile.RData")
+
+rm(list = ls())
 library(shiny)
+load("useWeeklyFile.RData")
+gameRanks <- games:1
 
-load("fsims2.RData")
-
-#input <- data.frame(players = 190, first = 220, second = 125, third = 50 )
-
-simulatePool(maxIter = 2000 ,numFans = input$players, 
-             payouts = c(input$first, input$second, input$third))
-
-topWin <- order(-winnings[1,])[1:3]
-topMoney <- order(-inTheMoney)[1:3]
-# data <- cbind(myRanks[order(-myRanks)] , strategies[,topWin])
-# data
 # Define a server for the Shiny app
 shinyServer(function(input, output) {
-  
+    
+  reactive(simulatePool(numFans = input$players, payouts = c(input$first, input$second, input$third)))
   
   # Filter data based on selections
-  output$table <- renderDataTable({
+  output$table <- renderTable({
     
-#     if (input$select == "Top Payouts"){
-#       data <- strategies[, topWin]
+    gameRanks
+#     data <- if (input$select == "Top Payouts"){
+#       cbind(gameRanks, strategies[, topWin])
 #     } else if (input$select == "Top Winners"){
-#       data <- strategies[, topMoney]
+#       cbind(gameRanks, strategies[, topMoney])
+#     } else if (input$select == "Favorites"){
+#       cbind(gameRanks, favorites)
 #     } else {
-#       data <- favorites
+#       gameRanks
 #     }
-    data <- data.frame(cbind(favorites, strategies[, topWin], strategiest[, topMoney]))
-    data
-  })
+#     data
+  }, drop = FALSE)
   
 })

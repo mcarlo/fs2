@@ -1,7 +1,7 @@
 processFile <- function(weekFilename = "2014week11.csv"){
   #rm(list = ls())
-  load("fansimsSkeleton.RData")
-  #weekFilename = "2014week15.csv"
+  #load("fansimsSkeleton.RData")
+  #weekFilename = "2014week17.csv"
   # these objects will vary by week
   #
 
@@ -29,13 +29,13 @@ processFile <- function(weekFilename = "2014week11.csv"){
   dogs <<- sapply(favorites, oppLabel)
   if(dim(weekFile)[2] == 8) {dogs <<- weekFile$Underdog}
 
-  save.image("procFile.RData")
+  #save.image("procFile.RData")
   ### dependent matrices
 }
 
 genMtx <- function(){
   #rm(list = ls())
-  load("procFile.RData")
+  #load("procFile.RData")
   #games <<- length(winProb)
   premium <<- 16 - games
   prem <<- FALSE
@@ -49,13 +49,13 @@ genMtx <- function(){
   }
   strategies <<- strategies
 
-  simPicks <- matrix((simplayerCols[selectRows, ]  < fanProb)*1, nrow = games, ncol = playerCols)
+  simPicks <- matrix((simplayerCols[selectRows]  < fanProb)*1, nrow = games, ncol = playerCols)
 
-  simFavs <- matrix(qbinom(simRand[1:games,], games, (favConf - .5)/games, lower.tail = T), nrow = games, ncol = playerCols) + (runif(playerCols * games) - .5)
+  simFavs <- matrix(qbinom(simRand[1:games], games, (favConf - .5)/games, lower.tail = T), nrow = games, ncol = playerCols) + (runif(playerCols * games) - .5)
   # simFavs[1:10, 1:10]
 
-  simDogs <- matrix(qbinom(simRand[1:games,], games, (dogConf - .5)/games, lower.tail = T), nrow = games, ncol = playerCols) + (runif(playerCols * games) - .5)
-  simPrior <- matrix(qbinom(simRand[1:games,], games, 0.5, lower.tail = T), nrow = games, ncol = playerCols) + (runif(playerCols * games) - .5)
+  simDogs <- matrix(qbinom(simRand[1:games], games, (dogConf - .5)/games, lower.tail = T), nrow = games, ncol = playerCols) + (runif(playerCols * games) - .5)
+  simPrior <- matrix(qbinom(simRand[1:games], games, 0.5, lower.tail = T), nrow = games, ncol = playerCols) + (runif(playerCols * games) - .5)
   #rm(simplayerCols); rm(simRand)
 
   simRaw <- (simPrior + simFavs *simPicks + simDogs *(1 - simPicks))/2
@@ -73,43 +73,41 @@ genMtx <- function(){
   totalPoints <<- t(crossprod((simPicks * simRanks), simOutcomes2) +
                       crossprod((1 - simPicks) * simRanks, (1 - simOutcomes2)))
 
-  upsetPoints <<- t(crossprod(upsetMatrix[selectRowsPrem,selectRowsPrem], simOutcomes2) +
-                      crossprod(upsetDiagMatrix[selectRowsPrem,selectRowsPrem], (1 - simOutcomes2)))
+  upsetPoints <<- t(crossprod(upsetMatrix[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2) +
+                      crossprod(upsetDiagMatrix[selectRowsPrem,selectRowsPrem,  drop = F], (1 - simOutcomes2)))
 
 }
 
 # cmpMtx <- cmpfun(genMtx)
 
-simParams <- function(numFans = 90){
+simParams <- function(){
   suppressMessages(require(foreach))
   # resultIndex <<- sample(1:2000, maxiter, replace = TRUE)
-  fanIndex <<- foreach(resultIndex, .combine = rbind) %do% sample(1:2000, numFans, replace = T)
-  totalPointsIter <<- matrix(foreach(i = 1:2000, .combine = rbind) %do%
-                               totalPoints[resultIndex[i], fanIndex[i,]], nrow = 2000, ncol = numFans)
+  fanIndex <<- foreach(resultIndex, .combine = rbind) %do% sample(1:2000, 250, replace = T)
+  rowMax <- 2000
+  totalPointsIter <<- matrix(foreach(i = 1:rowMax, .combine = rbind) %do%
+                               # i = 1
+                               totalPoints[resultIndex[i], fanIndex[i,]], nrow = rowMax, ncol = 250)
 }
 
 rankVinM_Q <- function(vec = myPointsVector[resultIndex], pointsMtrx = totalPointsIter){
   temp <- -matrix(cbind(vec, pointsMtrx), ncol = dim(pointsMtrx)[2] + 1)
   rankM <- t(apply(temp, 1, rank, ties.method = "min"))[, 1]
 }
-top3Money <- function(){
-  inTheMoney[which(rank(-inTheMoney) == 1) ]
-  inTheMoney[which(rank(-inTheMoney) == 2) ]
-  inTheMoney[which(rank(-inTheMoney) == 3) ]
-}
-
-top3Dollars <- function(){
-  winnings[which(rank(-winnings) == 1)]
-  winnings[which(rank(-winnings) == 2)]
-  winnings[which(rank(-winnings) == 3)]
-}
+# top3Money <- function(){
+#   strategies[, order(-inTheMoney)[1:3]]
+# }
+# 
+# top3Dollars <- function(){
+#   strategies[, order(-winnings[1,])[1:3]]
+# }
 
 simulatePool <- function(numFans = 100,
                          payouts = c(100, 0, 0), totalPointsMatrix = totalPointsIter,
                          myPointsVector = myPoints, upsetPointsMatrix = upsetPoints){
 
-  simParams(numFans = numFans)
-  maxIter <<- 2000
+  #simParams()
+  maxIter <- 2000
   stratWins <- rep(0, 14)
   stratPlace <- rep(0, 14)
   stratShow <- rep(0, 14)
@@ -128,8 +126,8 @@ simulatePool <- function(numFans = 100,
                            "Fav-5", "Fav-6", "Fav-7", "Fav-8", "Fav-9",
                            "Fav-10", "Fav-11", "Fav-12")
   rownames(resultsMatrix) <<- colnames(winnings)
-  top3Money()
-  top3Dollars()
+#   top3Money()
+#   top3Dollars()
   topWin <<- order(-winnings[1,])[1:3]
   topMoney <<- order(-inTheMoney)[1:3]
 

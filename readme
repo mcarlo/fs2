@@ -1,0 +1,13 @@
+1. Create permanent structures
+2. Weekly load process
+  a) load permanent structures
+  b) process file
+  c) define functions
+  d) save image
+3. ui
+  a) input #fans
+  b) input payouts[3]
+4. server 
+  a) load weekly image
+  b) subset fanpicks
+  c) determine topWins and topMoney
