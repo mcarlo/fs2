@@ -37,8 +37,9 @@ shiny::runApp(
     ), 
     server = function(input,output){
       load("useWeeklyFile.RData")
+      rm(totalPoints)
       gameRanks <- games:1
-      reactive({simulatePool(numFans = input$players, payouts = c(input$first, input$second, input$third))})
+      simulatePool()
       
       output$matrix <- renderUI({
         M <- matrix(c(favorites, strategies[, topWin[1]], strategies[, topMoney[1]]),ncol=3)

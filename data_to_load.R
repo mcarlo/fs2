@@ -65,11 +65,6 @@ genMtx <- function(){
 
   simOutcomes2 <<- (simOutcomes2[selectRows,] <= winProb) * 1
 
-  myRanks <<- rank(winProb, ties.method = "random")+premiumPts
-
-  myPoints <<- as.vector(crossprod(myRanks, simOutcomes2)) # * myRanks
-
-
   totalPoints <<- t(crossprod((simPicks * simRanks), simOutcomes2) +
                       crossprod((1 - simPicks) * simRanks, (1 - simOutcomes2)))
 
@@ -85,6 +80,11 @@ simParams <- function(){
   # resultIndex <<- sample(1:2000, maxiter, replace = TRUE)
   fanIndex <<- foreach(resultIndex, .combine = rbind) %do% sample(1:2000, 250, replace = T)
   rowMax <- 2000
+  maxIter <<- 2000
+  stratWins <<- rep(0, 14)
+  stratPlace <<- rep(0, 14)
+  stratShow <<- rep(0, 14)
+  
   totalPointsIter <<- matrix(foreach(i = 1:rowMax, .combine = rbind) %do%
                                # i = 1
                                totalPoints[resultIndex[i], fanIndex[i,]], nrow = rowMax, ncol = 250)
@@ -94,24 +94,16 @@ rankVinM_Q <- function(vec = myPointsVector[resultIndex], pointsMtrx = totalPoin
   temp <- -matrix(cbind(vec, pointsMtrx), ncol = dim(pointsMtrx)[2] + 1)
   rankM <- t(apply(temp, 1, rank, ties.method = "min"))[, 1]
 }
-# top3Money <- function(){
-#   strategies[, order(-inTheMoney)[1:3]]
-# }
-# 
-# top3Dollars <- function(){
-#   strategies[, order(-winnings[1,])[1:3]]
-# }
 
 simulatePool <- function(numFans = 100,
-                         payouts = c(100, 0, 0), totalPointsMatrix = totalPointsIter,
+                         payouts = c(100, 0, 0), totalPointsMatrix = totalPointsIter[, 1:numFans],
                          myPointsVector = myPoints, upsetPointsMatrix = upsetPoints){
 
-  #simParams()
-  maxIter <- 2000
-  stratWins <- rep(0, 14)
-  stratPlace <- rep(0, 14)
-  stratShow <- rep(0, 14)
-  stratMatrix <- matrix(cbind(myPointsVector[resultIndex], upsetPointsMatrix[resultIndex,]), nrow = maxIter)
+  myRanks <<- rank(winProb, ties.method = "random")+premiumPts
+  
+  myPoints <<- as.vector(crossprod(myRanks, simOutcomes2)) # * myRanks
+  
+  stratMatrix <- matrix(cbind(myPoints[resultIndex], upsetPointsMatrix[resultIndex,]), nrow = 2000)
 
   rankMatrix <- apply(stratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix)
   stratWins <- colSums(rankMatrix[, 1:14] == 1)
