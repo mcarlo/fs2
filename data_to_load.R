@@ -77,10 +77,11 @@ genMtx <- function(){
 
 simParams <- function(){
   suppressMessages(require(foreach))
+  maxIter <<- 2000
+  set.seed(123)
   # resultIndex <<- sample(1:2000, maxiter, replace = TRUE)
   fanIndex <<- foreach(resultIndex, .combine = rbind) %do% sample(1:2000, 250, replace = T)
   rowMax <- 2000
-  maxIter <<- 2000
   stratWins <<- rep(0, 14)
   stratPlace <<- rep(0, 14)
   stratShow <<- rep(0, 14)
