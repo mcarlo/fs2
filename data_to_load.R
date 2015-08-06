@@ -80,7 +80,7 @@ simParams <- function(){
   maxIter <<- 2000
   set.seed(123)
   # resultIndex <<- sample(1:2000, maxiter, replace = TRUE)
-  fanIndex <<- foreach(resultIndex, .combine = rbind) %do% sample(1:2000, 250, replace = T)
+  fanIndex <<- matrix(as.numeric(foreach(resultIndex, .combine = rbind) %do% as.numeric(sample(1:playerCols, 250, replace = T))), nrow = 2000)
   rowMax <- 2000
   stratWins <<- rep(0, 14)
   stratPlace <<- rep(0, 14)
