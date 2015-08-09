@@ -3,7 +3,7 @@ rm(list = ls())
 load("fansimsSkeleton.RData")
 source("data_to_load.R") #getwd()
 
-processFile("2014week16.csv")
+processFile("2014week17.csv")
 # games
 genMtx()
 simParams()
@@ -15,4 +15,4 @@ save.image("useWeeklyFile.RData")
 # strategies[, topWin]
 # strategies[, topMoney]
 # favorites
-# 
+#
