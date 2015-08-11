@@ -5,7 +5,7 @@ processFile <- function(weekFilename = "2014week11.csv"){
   # these objects will vary by week
   #
 
-  #setwd("D:/Documents/GitHub/fs2")
+  #setwd("~/GitHub/fs2")
 
   weekFile <- read.csv(weekFilename, stringsAsFactors = F, colClasses = c("character", "numeric", "integer",
                                                                           "numeric", "numeric", "numeric", "numeric",
@@ -48,7 +48,7 @@ genMtx <- function(){
     strategies[j - 1, j] <- dogs[j-1] #weekFile[1:3, ]; favorites[j]
     strategies[, j] <- strategies[order(-(upsetMatrix[selectRowsPrem, selectRowsPrem] + upsetDiagMatrix[selectRowsPrem, selectRowsPrem])[ , j - 1]), j]
   }
-  strategies <<- strategies
+  #strategies <<- strategies
 
   simPicks <- matrix((simplayerCols[selectRows]  < fanProb)*1, nrow = games, ncol = playerCols)
 
@@ -86,37 +86,41 @@ simParams <- function(){
   stratWins <<- rep(0, 14)
   stratPlace <<- rep(0, 14)
   stratShow <<- rep(0, 14)
-  
+
   totalPointsIter <<- matrix(foreach(i = 1:rowMax, .combine = rbind) %do%
                                # i = 1
                                totalPoints[resultIndex[i], fanIndex[i,]], nrow = rowMax, ncol = 250)
 }
 
-rankVinM_Q <- function(vec = myPointsVector[resultIndex], pointsMtrx = totalPointsIter){
+rankVinM_Q <- function(vec = myPoints[resultIndex], pointsMtrx = totalPointsIter){
   temp <- -matrix(cbind(vec, pointsMtrx), ncol = dim(pointsMtrx)[2] + 1)
   rankM <- t(apply(temp, 1, rank, ties.method = "min"))[, 1]
+  rankM
 }
 
-littleSim <- function(numFans = 250, totalPointsMatrix = totalPointsIter,
-                      upsetPointsMatrix = upsetPoints){# myPointsVector = myPoints){
-  
-  totalPointsMatrix <- totalPointsMatrix[, 1:numFans]
+littleSim <- function(numFans = 250)#, totalPointsMatrix = totalPointsIter,
+                      #upsetPointsMatrix = upsetPoints){# myPointsVector = myPoints){ #numFans = 25
 
-  upsetPoints <<- t(crossprod(upsetMatrix[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2) +
+  totalPointsMatrix <- totalPointsIter[, 1:numFans] #totalPointsMatrix[1:10,]
+
+  upsetPointsMatrix <- t(crossprod(upsetMatrix[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2) +
                       crossprod(upsetDiagMatrix[selectRowsPrem,selectRowsPrem,  drop = F], (1 - simOutcomes2)))
-  
+
   myRanks <- rank(winProb, ties.method = "random")+premiumPts
-  
+
   myPoints <- as.vector(crossprod(myRanks, simOutcomes2)) # * myRanks
-  
-  stratMatrix <- matrix(cbind(myPoints[resultIndex], upsetPoints[resultIndex,]), nrow = 2000)
-  
+
+  stratMatrix <- matrix(cbind(myPoints[resultIndex], upsetPointsMatrix[resultIndex,]), nrow = 2000)
+
   rankMatrix <- apply(stratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix)
-  
-  stratWins <<- colSums(rankMatrix[, 1:14] == 1)
-  stratPlace <<- colSums(rankMatrix[, 1:14] == 2)
-  stratShow <<- colSums(rankMatrix[, 1:14] == 3)
-  
+
+  #rankMatrix[1:10, 1]
+  #myPoints[1:10]; favorites; winProb
+
+  stratWins <- colSums(rankMatrix[, 1:14] == 1)
+  stratPlace <- colSums(rankMatrix[, 1:14] == 2)
+  stratShow <- colSums(rankMatrix[, 1:14] == 3)
+
   resultsMatrix <- as.matrix(cbind(stratWins, stratPlace, stratShow), nrow = 6, ncol = 3) * 17.0 / maxIter
   resultsMatrix
 }
@@ -140,9 +144,9 @@ simulatePool <- function(numFans = 100,
                          myPointsVector = myPoints, upsetPointsMatrix = upsetPoints){
 
   myRanks <<- rank(winProb, ties.method = "random")+premiumPts
-  
+
   myPoints <<- as.vector(crossprod(myRanks, simOutcomes2)) # * myRanks
-  
+
   stratMatrix <- matrix(cbind(myPoints[resultIndex], upsetPointsMatrix[resultIndex,]), nrow = 2000)
 
   rankMatrix <- apply(stratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix)
