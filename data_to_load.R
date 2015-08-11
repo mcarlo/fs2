@@ -100,7 +100,7 @@ rankVinM_Q <- function(vec = myPointsVector[resultIndex], pointsMtrx = totalPoin
 littleSim <- function(numFans = 250, totalPointsMatrix = totalPointsIter,
                       upsetPointsMatrix = upsetPoints){# myPointsVector = myPoints){
   
-  totalPointsMatrix = totalPointsMatrix[, 1:numFans]
+  totalPointsMatrix <- totalPointsMatrix[, 1:numFans]
 
   upsetPoints <<- t(crossprod(upsetMatrix[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2) +
                       crossprod(upsetDiagMatrix[selectRowsPrem,selectRowsPrem,  drop = F], (1 - simOutcomes2)))
