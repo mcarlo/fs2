@@ -14,6 +14,7 @@ processFile <- function(weekFilename = "2014week11.csv"){
   winProb <<- weekFile[, 2]
   if (max(winProb) > 1) {winProb <<- winProb/100.0}
   games <<- length(winProb)
+  gameRanks <<- games:1
 
   favorites <<- weekFile$Victor
   strategies <<- matrix(rep(favorites, 14), ncol = 14)
@@ -94,6 +95,44 @@ simParams <- function(){
 rankVinM_Q <- function(vec = myPointsVector[resultIndex], pointsMtrx = totalPointsIter){
   temp <- -matrix(cbind(vec, pointsMtrx), ncol = dim(pointsMtrx)[2] + 1)
   rankM <- t(apply(temp, 1, rank, ties.method = "min"))[, 1]
+}
+
+littleSim <- function(numFans = 250, totalPointsMatrix = totalPointsIter,
+                      upsetPointsMatrix = upsetPoints){# myPointsVector = myPoints){
+  
+  totalPointsMatrix = totalPointsMatrix[, 1:numFans]
+
+  upsetPoints <<- t(crossprod(upsetMatrix[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2) +
+                      crossprod(upsetDiagMatrix[selectRowsPrem,selectRowsPrem,  drop = F], (1 - simOutcomes2)))
+  
+  myRanks <- rank(winProb, ties.method = "random")+premiumPts
+  
+  myPoints <- as.vector(crossprod(myRanks, simOutcomes2)) # * myRanks
+  
+  stratMatrix <- matrix(cbind(myPoints[resultIndex], upsetPoints[resultIndex,]), nrow = 2000)
+  
+  rankMatrix <- apply(stratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix)
+  
+  stratWins <<- colSums(rankMatrix[, 1:14] == 1)
+  stratPlace <<- colSums(rankMatrix[, 1:14] == 2)
+  stratShow <<- colSums(rankMatrix[, 1:14] == 3)
+  
+  resultsMatrix <- as.matrix(cbind(stratWins, stratPlace, stratShow), nrow = 6, ncol = 3) * 17.0 / maxIter
+  resultsMatrix
+}
+
+computeWinnings <- function(resultsMatrix, payouts = c(100, 0, 0)) {
+  winnings <- round(as.data.frame(t((resultsMatrix %*% payouts))), 1)
+  colnames(winnings) <- c("WTP", "Fav", "Fav-1", "Fav-2", "Fav-3", "Fav-4",
+                           "Fav-5", "Fav-6", "Fav-7", "Fav-8", "Fav-9",
+                           "Fav-10", "Fav-11", "Fav-12")
+  rownames(resultsMatrix) <- colnames(winnings)
+  winnings
+}
+
+countITM <- function(resultsMatrix, payouts = c(100, 0, 0)) {
+  inTheMoney <- round(rowSums(resultsMatrix %*% (1*(payouts > 0))), 2)
+  inTheMoney
 }
 
 simulatePool <- function(numFans = 100,

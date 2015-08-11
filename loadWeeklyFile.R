@@ -3,16 +3,9 @@ rm(list = ls())
 load("fansimsSkeleton.RData")
 source("data_to_load.R") #getwd()
 
-processFile("2014week17.csv")
-# games
+processFile("2014week16.csv")
 genMtx()
 simParams()
+rankMatrix <- littleSim(numFans = 250, totalPointsMatrix = totalPointsIter,
+                      upsetPointsMatrix = upsetPoints)
 save.image("useWeeklyFile.RData")
-
-# simulatePool(numFans = 200, payouts = c(225, 125, 50))
-# topWin
-# topMoney
-# strategies[, topWin]
-# strategies[, topMoney]
-# favorites
-#

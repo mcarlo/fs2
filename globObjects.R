@@ -1,7 +1,7 @@
 # Create placeholder objects to allocate memory
 
 # rm(list= ls())
-playerCols = 500
+playerCols = 250
 games = 16
 
 # simulate placeholder
