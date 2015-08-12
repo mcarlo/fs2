@@ -22,10 +22,9 @@ shinyUI(
              numericInput("third", "Third place payout:", 50)
       )
     ),
+    fluidRow(3, actionButton("goButton", "Update and simulate")),
     # Create a new row for the table.
     fluidRow(
-      # an ordinary selectize input without option groups
-      selectInput('display', 'Select', choices = c("Favorites", "Top Payouts", "Top Winners")),
     # Create a new row for the table.
       tableOutput(outputId="resultsTable")
     )
