@@ -4,12 +4,10 @@ load("fansimsSkeleton.RData")
 source("data_to_load.R") #getwd()
 
 processFile("2014week16.csv")
-genMtx()
+genMtx() #strategies
 simParams()
-myRanks <- rank(winProb, ties.method = "random")+premiumPts
-myPoints <- calcPoints()
 littleSim(numFans = 250)
-rankMatrix
+
 # rankMatrix <- littleSim(numFans = 250, totalPointsMatrix = totalPointsIter,
 #                       upsetPointsMatrix = upsetPoints)
 save.image("useWeeklyFile.RData")
