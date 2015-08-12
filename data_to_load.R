@@ -1,21 +1,26 @@
-processFile <- function(weekFilename = "2014week11.csv"){
+processFile <- function(weekFilename = "2014week16.csv"){
   #rm(list = ls())
   #load("fansimsSkeleton.RData")
-  #weekFilename = "2014week17.csv"
+  #weekFilename = "2014week16.csv"
   # these objects will vary by week
   #
 
   #setwd("~/GitHub/fs2")
 
-  weekFile <- read.csv(weekFilename, stringsAsFactors = F, colClasses = c("character", "numeric", "integer",
+  weekFile <<- read.csv(weekFilename, stringsAsFactors = F, colClasses = c("character", "numeric", "integer",
                                                                           "numeric", "numeric", "numeric", "numeric",
                                                                           "character"))
-  weekFile <<- weekFile[order(-weekFile$Confidence),]
-  winProb <<- weekFile[, 2]
-  if (max(winProb) > 1) {winProb <<- winProb/100.0}
-  games <<- length(winProb)
+  games <<- length(weekFile$Confidence)
   gameRanks <<- games:1
+  
+  if (any(rank(weekFile$Confidence) != games:1)){
+    weekFile <<- weekFile[order(-weekFile$Confidence),]
+  }
 
+  winProb <<- weekFile[, 2]
+  
+  if (max(winProb) > 1) {winProb <<- winProb/100.0}
+  
   favorites <<- weekFile$Victor
   strategies <<- matrix(rep(favorites, 14), ncol = 14)
 
@@ -98,8 +103,8 @@ rankVinM_Q <- function(vec = myPoints[resultIndex], pointsMtrx = totalPointsIter
   rankM
 }
 
-littleSim <- function(numFans = 250)#, totalPointsMatrix = totalPointsIter,
-                      #upsetPointsMatrix = upsetPoints){# myPointsVector = myPoints){ #numFans = 25
+littleSim <- function(numFans = 250, totalPointsMatrix = totalPointsIter,
+                      upsetPointsMatrix = upsetPoints){# myPointsVector = myPoints){ #numFans = 25
 
   totalPointsMatrix <- totalPointsIter[, 1:numFans] #totalPointsMatrix[1:10,]
 
@@ -117,12 +122,12 @@ littleSim <- function(numFans = 250)#, totalPointsMatrix = totalPointsIter,
   #rankMatrix[1:10, 1]
   #myPoints[1:10]; favorites; winProb
 
-  stratWins <- colSums(rankMatrix[, 1:14] == 1)
-  stratPlace <- colSums(rankMatrix[, 1:14] == 2)
-  stratShow <- colSums(rankMatrix[, 1:14] == 3)
+  stratWins <<- colSums(rankMatrix[, 1:14] == 1)
+  stratPlace <<- colSums(rankMatrix[, 1:14] == 2)
+  stratShow <<- colSums(rankMatrix[, 1:14] == 3)
 
-  resultsMatrix <- as.matrix(cbind(stratWins, stratPlace, stratShow), nrow = 6, ncol = 3) * 17.0 / maxIter
-  resultsMatrix
+  resultsMatrix <<- as.matrix(cbind(stratWins, stratPlace, stratShow), nrow = 6, ncol = 3) * 17.0 / maxIter
+#  resultsMatrix
 }
 
 computeWinnings <- function(resultsMatrix, payouts = c(100, 0, 0)) {
@@ -170,5 +175,33 @@ simulatePool <- function(numFans = 100,
   #print(resultsMatrix)
   #   print(rbind(round(winnings, 2), round(apply(resultsMatrix, 1, sum), 1)))
 
+}
+
+simulateOld <- function(maxIter = 2000, numFans = 90,
+                         payouts = c(100, 0, 0), totalPointsMatrix = totalPointsIter,
+                         myPointsVector = myPoints, upsetPointsMatrix = upsetPoints){
+  
+  stratWins <- rep(0, 14)
+  stratPlace <- rep(0, 14)
+  stratShow <- rep(0, 14)
+  stratMatrix <- matrix(cbind(myPointsVector[resultIndex], upsetPointsMatrix[resultIndex,]), nrow = maxIter)
+  
+  rankMatrix <- apply(stratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix)
+  stratWins <- colSums(rankMatrix[, 1:14] == 1)
+  stratPlace <- colSums(rankMatrix[, 1:14] == 2)
+  stratShow <- colSums(rankMatrix[, 1:14] == 3)
+  
+  resultsMatrix <<- as.matrix(cbind(stratWins, stratPlace, stratShow), nrow = 6, ncol = 3) * 17.0 / maxIter
+  winnings <<- round(as.data.frame(t((resultsMatrix %*% payouts))), 1)
+  inTheMoney <<- round(rowSums(resultsMatrix %*% (1*(payouts > 0))), 2)
+  
+  colnames(winnings) <<- c("WTP", "Fav", "Fav-1", "Fav-2", "Fav-3", "Fav-4",
+                           "Fav-5", "Fav-6", "Fav-7", "Fav-8", "Fav-9",
+                           "Fav-10", "Fav-11", "Fav-12")
+  rownames(resultsMatrix) <<- colnames(winnings)
+  #print(resultsMatrix)
+  #   print(rbind(round(winnings, 2), round(apply(resultsMatrix, 1, sum), 1)))
+  #   cat(paste0("maxIterations = ", maxIter))
+  
 }
 

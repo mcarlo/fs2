@@ -6,6 +6,8 @@ source("data_to_load.R") #getwd()
 processFile("2014week16.csv")
 genMtx()
 simParams()
-rankMatrix <- littleSim(numFans = 250, totalPointsMatrix = totalPointsIter,
-                      upsetPointsMatrix = upsetPoints)
+littleSim(numFans = 250)
+rankMatrix
+# rankMatrix <- littleSim(numFans = 250, totalPointsMatrix = totalPointsIter,
+#                       upsetPointsMatrix = upsetPoints)
 save.image("useWeeklyFile.RData")
