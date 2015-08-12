@@ -80,6 +80,13 @@ genMtx <- function(){
 }
 
 # cmpMtx <- cmpfun(genMtx)
+assignPoolPoints <- function(numFans){
+  poolPoints <<- totalPointsIter[, 1:numFans]
+}
+
+calcPoints <- function(rankVec, outcomeMatrix = simOutcomes2){
+  pointVec <- as.vector(t(crossprod(rankVec, outcomeMatrix)))
+}
 
 simParams <- function(){
   suppressMessages(require(foreach))
@@ -91,6 +98,13 @@ simParams <- function(){
   stratWins <<- rep(0, 14)
   stratPlace <<- rep(0, 14)
   stratShow <<- rep(0, 14)
+  
+  myRanks <<- rank(winProb, ties.method = "random")+premiumPts
+  myPoints <<- calcPoints(myRanks)
+  
+  upsetPointsMatrix <<- foreach(i = 1:games, .combine = cbind) %do% {
+    
+  }
 
   totalPointsIter <<- matrix(foreach(i = 1:rowMax, .combine = rbind) %do%
                                # i = 1
@@ -103,6 +117,9 @@ rankVinM_Q <- function(vec = myPoints[resultIndex], pointsMtrx = totalPointsIter
   rankM
 }
 
+
+
+
 littleSim <- function(numFans = 250, totalPointsMatrix = totalPointsIter,
                       upsetPointsMatrix = upsetPoints){# myPointsVector = myPoints){ #numFans = 25
 
@@ -111,7 +128,7 @@ littleSim <- function(numFans = 250, totalPointsMatrix = totalPointsIter,
   upsetPointsMatrix <- t(crossprod(upsetMatrix[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2) +
                       crossprod(upsetDiagMatrix[selectRowsPrem,selectRowsPrem,  drop = F], (1 - simOutcomes2)))
 
-  myRanks <- rank(winProb, ties.method = "random")+premiumPts
+  myRanks <<- rank(winProb, ties.method = "random")+premiumPts
 
   myPoints <- as.vector(crossprod(myRanks, simOutcomes2)) # * myRanks
 
