@@ -12,21 +12,21 @@ shinyUI(
       )
     ),
     fluidRow(
-        column(4,
+        column(3,
              numericInput("first", "First place payout:", 225)
       ),
-      column(4,
+      column(3,
              numericInput("second", "Second place payout:", 125)
       ),
-      column(4,
+      column(3,
              numericInput("third", "Third place payout:", 50)
       )
     ),
-    fluidRow(3, actionButton("goButton", "Update and simulate")),
+    #fluidRow(actionButton("goButton", "Update and simulate")),
     # Create a new row for the table.
     fluidRow(
     # Create a new row for the table.
-      tableOutput(outputId="resultsTable")
+      tableOutput(outputId="table")
     )
   )
 )
