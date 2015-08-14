@@ -9,7 +9,7 @@ shinyServer(function(input, output) { # input <- data.frame(players = 250, first
   #reactive({simulatePool(numFans = input$players, payouts = c(input$first, input$second, input$third))})
   #reactive({winnings <- round(as.data.frame(t((results %*% c(input$first, input$second, input$third)))), 1)})
   output$table <- renderTable({
-    results <- littleSim(numFans = input$players)
+    results <- calcWinners(input$players)
     winDollars <- round(as.data.frame(t((results %*% c(input$first, input$second, input$third)))), 1)
     colnames(winDollars) <- c("WTP", "Fav", "Fav-1", "Fav-2", "Fav-3", "Fav-4",
                             "Fav-5", "Fav-6", "Fav-7", "Fav-8", "Fav-9",

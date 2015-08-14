@@ -1,8 +1,9 @@
 # Create placeholder objects to allocate memory
 
 # rm(list= ls())
-playerCols = 250
+playerCols = 500
 games = 16
+weekseed = 1
 
 # simulate placeholder
 simRaw <- matrix(rep(0,playerCols*games), nrow = games, ncol = playerCols)
@@ -22,7 +23,7 @@ for (j in 2:games){
     (games - j + 1)
 }
 
-set.seed(123) #as.numeric(Sys.time()))
+set.seed(weekseed) #as.numeric(Sys.time()))
 
 simplayerCols <- matrix(runif(games*playerCols), nrow = games, ncol = playerCols)
 simPicks <- simplayerCols * 0
