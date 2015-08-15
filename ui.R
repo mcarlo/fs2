@@ -8,7 +8,7 @@ shinyUI(
     # Create a new Row in the UI for selectInputs
     fluidRow(
       column(3,
-             numericInput("players", "Number of entries in pool:", 100)
+             numericInput("players", "Number of Players in Pool:", 100)
       )
     ),
     fluidRow(
@@ -25,8 +25,25 @@ shinyUI(
     #fluidRow(actionButton("goButton", "Update and simulate")),
     # Create a new row for the table.
     fluidRow(
+      tabsetPanel(
+        tabPanel("Highest Expected Payouts", 
+                 p("This panel is reactive. Change the Number of Players, and  
+                   payouts for First, Second, and Third place to see how the 
+                   top expected payout picks change."),                  
+                 
+                 tableOutput(outputId="expected"),
+                 tableOutput(outputId="Winnings")),
+        
+        tabPanel("Most Often In-the-money", 
+                 p("This panel is reactive. Change the Number of Players, and  
+                   payouts for First, Second, and Third place to see how the 
+                   top picks most likely to win a payout change."),                  
+                 
+                 tableOutput(outputId="freq"),
+                 tableOutput(outputId="ITM"))
+        
     # Create a new row for the table.
-      tableOutput(outputId="table")
+      # tableOutput(outputId="Winnings")
     )
   )
-)
+))
