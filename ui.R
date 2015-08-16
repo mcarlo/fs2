@@ -8,18 +8,22 @@ shinyUI(
     # Create a new Row in the UI for selectInputs
     fluidRow(
       column(3,
-             numericInput("players", "Number of Players in Pool:", 100)
+             sliderInput("players", label = "Number of Players in Pool:", min = 10, 
+                         max = 250, step = 10, value = 100)
       )
     ),
     fluidRow(
         column(3,
-             numericInput("first", "First place payout:", 225)
+             sliderInput("first", "First place payout:", min = 10, 
+                         max = 250, step = 5, value = 100)
       ),
       column(3,
-             numericInput("second", "Second place payout:", 125)
+             sliderInput("second", "Second place payout:", min = 0, 
+                         max = 250, step = 5, value = 50)
       ),
       column(3,
-             numericInput("third", "Third place payout:", 50)
+             sliderInput("third", "Third place payout:", min = 0, 
+                         max = 250, step = 5, value = 25)
       )
     ),
 
