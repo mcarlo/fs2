@@ -29,7 +29,7 @@ shinyUI(
         tabPanel("Highest Expected Payouts",
                  p("This panel is reactive. Change the Number of Players, and
                    weekly payouts for First, Second, and Third place to see the
-                   top three slates change, and their simulated payouts."),
+                   top three slates change."),
 
                   h5("Slate 1:", textOutput(outputId = 'exp1', inline = T), " per simulated season."),
                   tableOutput(outputId="expSlate1"),

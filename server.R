@@ -1,5 +1,5 @@
 rm(list = ls())
-library(shiny)
+library(shiny); library(scales)
 load("useWeeklyFile.RData")
 
 # Define a server for the Shiny app
@@ -22,22 +22,24 @@ shinyServer(function(input, output) { # input <- data.frame(players = 250, first
 
   output$exp1 <- renderText({
 
-    as.character(paste0("$", winDollars()[order(-winDollars())][1], sep = ""))
+    sapply(winDollars()[1,order(-winDollars())], dollar)[1]
   })
 
   output$exp2 <- renderText({
 
-    as.character(paste0("$", winDollars()[order(-winDollars())][2], sep = ""))
+    sapply(winDollars()[1,order(-winDollars())], dollar)[2]
+#    as.character(paste0("$", winDollars()[order(-winDollars())][2], sep = ""))
   })
 
   output$exp3 <- renderText({
 
-    as.character(paste0("$", winDollars()[order(-winDollars())][3], sep = ""))
+    sapply(winDollars()[1,order(-winDollars())], dollar)[3]
+#    as.character(paste0("$", winDollars()[order(-winDollars())][3], sep = ""))
   })
 
   output$expFav <- renderText({
-
-    as.character(paste0("$", winDollars()[1], sep = ""))
+    sapply(winDollars()[1,], dollar)[1]
+    # as.character(paste0("$", winDollars()[1], sep = ""))
   })
 
   output$expSlate1 <- renderTable({
