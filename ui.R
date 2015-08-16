@@ -26,22 +26,32 @@ shinyUI(
     # Create a new row for the table.
     fluidRow(
       tabsetPanel(
-        tabPanel("Highest Expected Payouts", 
-                 p("This panel is reactive. Change the Number of Players, and  
-                   payouts for First, Second, and Third place to see how the 
-                   top expected payout picks change."),                  
-                 
-                 tableOutput(outputId="expected"),
-                 tableOutput(outputId="Winnings")),
-        
-        tabPanel("Most Often In-the-money", 
-                 p("This panel is reactive. Change the Number of Players, and  
-                   payouts for First, Second, and Third place to see how the 
-                   top picks most likely to win a payout change."),                  
-                 
+        tabPanel("Highest Expected Payouts",
+                 p("This panel is reactive. Change the Number of Players, and
+                   weekly payouts for First, Second, and Third place to see the
+                   top three slates change, and their simulated payouts."),
+
+                  h5("Slate 1:", textOutput(outputId = 'exp1', inline = T), " per simulated season."),
+                  tableOutput(outputId="expSlate1"),
+                  br(),
+                  h5("Slate 2:", textOutput(outputId = 'exp2', inline = T), " per simulated season."),
+                  tableOutput(outputId="expSlate2"),
+                  br(),
+                  h5("Slate 3:", textOutput(outputId = 'exp3', inline = T), " per simulated season."),
+                  tableOutput(outputId="expSlate3"),
+                  br(),
+                  h5("Favorites:", textOutput(outputId = 'expFav', inline = T), " per simulated season."),
+                  tableOutput(outputId="expSlateF")
+                 ),
+
+        tabPanel("Most Often In-the-money",
+                 p("This panel is reactive. Change the Number of Players, and
+                   payouts for First, Second, and Third place to see how the
+                   top picks most likely to win a payout change."),
+
                  tableOutput(outputId="freq"),
                  tableOutput(outputId="ITM"))
-        
+
     # Create a new row for the table.
       # tableOutput(outputId="Winnings")
     )
