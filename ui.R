@@ -22,7 +22,7 @@ shinyUI(
              numericInput("third", "Third place payout:", 50)
       )
     ),
-    #fluidRow(actionButton("goButton", "Update and simulate")),
+
     # Create a new row for the table.
     fluidRow(
       tabsetPanel(
@@ -46,14 +46,25 @@ shinyUI(
 
         tabPanel("Most Often In-the-money",
                  p("This panel is reactive. Change the Number of Players, and
-                   payouts for First, Second, and Third place to see how the
-                   top picks most likely to win a payout change."),
+                   weekly payouts for First, Second, and Third place to see the
+                   three most frequently winning slates change."),
 
-                 tableOutput(outputId="freq"),
-                 tableOutput(outputId="ITM"))
-
-    # Create a new row for the table.
-      # tableOutput(outputId="Winnings")
+                 h5("Slate 1: In the money ", textOutput(outputId = 'freq1', inline = T), " weeks per simulated season."),
+                 tableOutput(outputId="ITM1"),
+                 br(),
+                 h5("Slate 2: In the money ", textOutput(outputId = 'freq2', inline = T), " weeks per simulated season."),
+                 tableOutput(outputId="ITM2"),
+                 br(),
+                 h5("Slate 3: In the money ", textOutput(outputId = 'freq3', inline = T), " weeks per simulated season."),
+                 tableOutput(outputId="ITM3"),
+                 br(),
+                 h5("Favorites: In the money ", textOutput(outputId = 'freqFav', inline = T), " weeks per simulated season."),
+                 tableOutput(outputId="ITMF"),
+                 br()
+#                  ,
+#                  tableOutput(outputId="freq"),
+#                  tableOutput(outputId="ITM"))
     )
   )
+)
 ))
