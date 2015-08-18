@@ -3,7 +3,7 @@ rm(list = ls())
 load("fansimsSkeleton.RData")
 source("data_to_load.R") #getwd()
 
-processFile("2014week15.csv")
+processFile("2015week01.csv")
 genMtx() #strategies
 simParams()
 littleSim()

@@ -1,0 +1,17 @@
+Victor,WinProbability,Confidence,FanProb,DogProb,FavConf,DogConf,Underdog
+@ New England,0.575525681,4,0.48,0.52,5.5,4.7,Pittsburgh
+Indianapolis,0.575861055,5,0.85,0.15,8.5,4.3,@ Buffalo
+Green Bay,0.691138218,16,0.9,0.1,10.1,4.3,@ Chicago
+Seattle,0.603849428,11,0.88,0.12,9.2,3.8,@ St. Louis
+@ New York (NYJ),0.582900943,9,0.67,0.33,5.6,4.6,Cleveland
+Miami,0.577907309,7,0.76,0.24,6.7,4.8,@ Washington
+Carolina,0.623588603,14,0.86,0.14,8,4.3,@ Jacksonville
+@ Houston,0.529133863,3,0.56,0.44,5,5.3,Kansas City
+@ Arizona,0.581508187,8,0.71,0.29,6,5.3,New Orleans
+@ San Diego,0.577607363,6,0.7,0.3,6.1,4.9,Detroit
+@ Denver,0.61626242,13,0.89,0.11,8.3,4.8,Baltimore
+Cincinnati,0.607700797,12,0.79,0.21,7.7,4.5,@ Oakland
+@ Tampa Bay,0.592581527,10,0.74,0.26,5.5,4.7,Tennessee
+@ Dallas,0.662174836,15,0.86,0.14,8,4.8,New York (NYG)
+Philadelphia,0.512454214,2,0.47,0.53,5.6,5.1,@ Atlanta
+@ San Francisco,0.502142928,1,0.62,0.38,6.4,5.6,Minnesota
