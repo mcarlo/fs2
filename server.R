@@ -24,6 +24,10 @@ shinyServer(function(input, output) { # input <- data.frame(players = 250, first
     sapply(winDollars()[1,order(-winDollars())], dollar)[1]
   })
 
+  output$top1 <- renderText({round(results()[order(-winDollars()), 1][1], 2)})
+  output$top2 <- renderText({round(results()[order(-winDollars()), 2][1], 2)})
+  output$top3 <- renderText({round(results()[order(-winDollars()), 3][1], 2)})
+
   output$exp2 <- renderText({
 
     sapply(winDollars()[1,order(-winDollars())], dollar)[2]

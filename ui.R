@@ -8,21 +8,21 @@ shinyUI(
     # Create a new Row in the UI for selectInputs
     fluidRow(
       column(3,
-             sliderInput("players", label = "Number of Players in Pool:", min = 10, 
+             sliderInput("players", label = "Number of Players in Pool:", min = 10,
                          max = 250, step = 10, value = 100)
       )
     ),
     fluidRow(
         column(3,
-             sliderInput("first", "First place payout:", min = 10, 
+             sliderInput("first", "First place payout:", min = 10,
                          max = 250, step = 5, value = 100)
       ),
       column(3,
-             sliderInput("second", "Second place payout:", min = 0, 
+             sliderInput("second", "Second place payout:", min = 0,
                          max = 250, step = 5, value = 50)
       ),
       column(3,
-             sliderInput("third", "Third place payout:", min = 0, 
+             sliderInput("third", "Third place payout:", min = 0,
                          max = 250, step = 5, value = 25)
       )
     ),
@@ -37,7 +37,7 @@ shinyUI(
                    weekly payouts for First, Second, and Third place to see the
                                               top three slates change."))),
                  fluidRow(
-                 column(4,                  
+                 column(4,
                         br()
 #                  p("This panel is reactive. Change the Number of Players, and
 #                    weekly payouts for First, Second, and Third place to see the
@@ -45,6 +45,10 @@ shinyUI(
                  ),
                   column(4,
                          h5("Slate 1:", textOutput(outputId = 'exp1', inline = T), " per simulated season."),
+                         h5("Simulated weeks per season..."),
+                         h5("in First place: ",  textOutput(outputId = 'top1', inline = T)),
+                         h5("in Second place: ",  textOutput(outputId = 'top2', inline = T)),
+                         h5("in Third place: ",  textOutput(outputId = 'top3', inline = T)),
                   tableOutput(outputId="expSlate1"),
                   br(),
                   h5("Slate 2:", textOutput(outputId = 'exp2', inline = T), " per simulated season."),
@@ -56,38 +60,39 @@ shinyUI(
                   h5("Favorites:", textOutput(outputId = 'expFav', inline = T), " per simulated season."),
                   tableOutput(outputId="expSlateF")
                   ))
-                 ),
-
-        tabPanel("Most Often In-the-money",
-                 fluidRow(
-                   column(2," "),
-                   column(8, p("This panel is reactive. Use the sliders above to change the Number of Players, and
-                               weekly payouts for First, Second, and Third place to see the
-                               top three slates change."))),
-                 fluidRow(
-                   column(4,                  
-                          br()
-                          #                  p("This panel is reactive. Change the Number of Players, and
-                          #                    weekly payouts for First, Second, and Third place to see the
-                          #                    top three slates change."),
-                   ),
-                 column(4,
-                        h5("Slate 1: In the money ", textOutput(outputId = 'freq1', inline = T), " weeks per simulated season."),
-                 tableOutput(outputId="ITM1"),
-                 br(),
-                 h5("Slate 2: In the money ", textOutput(outputId = 'freq2', inline = T), " weeks per simulated season."),
-                 tableOutput(outputId="ITM2"),
-                 br(),
-                 h5("Slate 3: In the money ", textOutput(outputId = 'freq3', inline = T), " weeks per simulated season."),
-                 tableOutput(outputId="ITM3"),
-                 br(),
-                 h5("Favorites: In the money ", textOutput(outputId = 'freqFav', inline = T), " weeks per simulated season."),
-                 tableOutput(outputId="ITMF"),
-                 br())
-#                  ,
-#                  tableOutput(outputId="freq"),
-#                  tableOutput(outputId="ITM"))
-    )
-  )
+                 )
+# ,
+#
+#         tabPanel("Most Often In-the-money",
+#                  fluidRow(
+#                    column(2," "),
+#                    column(8, p("This panel is reactive. Use the sliders above to change the Number of Players, and
+#                                weekly payouts for First, Second, and Third place to see the
+#                                top three slates change."))),
+#                  fluidRow(
+#                    column(4,
+#                           br()
+#                           #                  p("This panel is reactive. Change the Number of Players, and
+#                           #                    weekly payouts for First, Second, and Third place to see the
+#                           #                    top three slates change."),
+#                    ),
+#                  column(4,
+#                         h5("Slate 1: In the money ", textOutput(outputId = 'freq1', inline = T), " weeks per simulated season."),
+#                  tableOutput(outputId="ITM1"),
+#                  br(),
+#                  h5("Slate 2: In the money ", textOutput(outputId = 'freq2', inline = T), " weeks per simulated season."),
+#                  tableOutput(outputId="ITM2"),
+#                  br(),
+#                  h5("Slate 3: In the money ", textOutput(outputId = 'freq3', inline = T), " weeks per simulated season."),
+#                  tableOutput(outputId="ITM3"),
+#                  br(),
+#                  h5("Favorites: In the money ", textOutput(outputId = 'freqFav', inline = T), " weeks per simulated season."),
+#                  tableOutput(outputId="ITMF"),
+#                  br())
+# #                  ,
+# #                  tableOutput(outputId="freq"),
+# #                  tableOutput(outputId="ITM"))
+#     )
+  # )
 )
 )))
