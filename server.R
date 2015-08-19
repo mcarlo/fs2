@@ -45,30 +45,30 @@ shinyServer(function(input, output) { # input <- data.frame(players = 250, first
   output$expSlate1 <- renderTable({
     data1 <- as.data.frame(cbind(gameRanks, strategies[, order(-winDollars())][, 1]))
 
-    colnames(data1) <- c("Confidence", "Slate 1")
+    colnames(data1) <- c("Confidence", "Team")
     data1
-  })
+  }, include.rownames = F)
 
   output$expSlate2 <- renderTable({
     data2 <- as.data.frame(cbind(gameRanks, strategies[, order(-winDollars())][, 2]))
 
-    colnames(data2) <- c("Confidence", "Slate 2")
+    colnames(data2) <- c("Confidence", "Team")
     data2
-  })
+  }, include.rownames = F)
 
   output$expSlate3 <- renderTable({
     data3 <- as.data.frame(cbind(gameRanks, strategies[, order(-winDollars())][, 3]))
 
-    colnames(data3) <- c("Confidence", "Slate 3")
+    colnames(data3) <- c("Confidence", "Team")
     data3
-  })
+  }, include.rownames = F)
 
   output$expSlateF <- renderTable({
     dataF <- as.data.frame(cbind(gameRanks, favorites))
 
-    colnames(dataF) <- c("Confidence","Favorites")
+    colnames(dataF) <- c("Confidence","Team")
     dataF
-  })
+  }, include.rownames = F)
 
   output$ITM <- renderTable({
 
