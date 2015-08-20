@@ -34,6 +34,10 @@ processFile <- function(weekFilename){
   oppLabel <- function(c){paste0(c, "'s opponent")}
   dogs <<- sapply(favorites, oppLabel)
   if(dim(weekFile)[2] == 8) {dogs <<- weekFile$Underdog}
+  
+  suppressMessages(suppressWarnings(library(data.table)))
+  
+  weekFileDT <<- data.table(weekFile, key = Victor)
 
   #save.image("procFile.RData")
   ### dependent matrices
