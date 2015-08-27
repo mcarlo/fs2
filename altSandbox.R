@@ -1,3 +1,4 @@
+rm(list = ls())
 genGameRanks <- function(nGames = 16) {nGames:1}
 
 # generate square matrix with each column == gameRanks
@@ -11,8 +12,6 @@ genSq <- function(nGames = 16){
 genZeroSq <- function(nGames = 16){
   matrix(rep(0, nGames^2), ncol = nGames)
 }
-
-genZeroSq(15)
 
 nGames = 16
 altFavs <- genZeroSq(nGames)
@@ -33,3 +32,10 @@ for (j in 1:nGames){ #j = 1
   }
 }
 altUpsets[topCol, ] <- genGameRanks(16)
+
+altUpsets2 <- altUpsets
+altUpsets2[topCol, ] <- 0
+altUpsetsRow[topCol, ] <- genGameRanks()
+
+ls()
+save.image("altStuff.RData")

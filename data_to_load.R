@@ -35,9 +35,9 @@ processFile <- function(weekFilename){
   dogs <<- sapply(favorites, oppLabel)
   if(dim(weekFile)[2] == 8) {dogs <<- weekFile$Underdog}
   
-  suppressMessages(suppressWarnings(library(data.table)))
-  
-  weekFileDT <<- data.table(weekFile, key = Victor)
+#   suppressMessages(suppressWarnings(library(data.table)))
+#   
+#   weekFileDT <<- data.table(weekFile, key = Victor)
 
   #save.image("procFile.RData")
   ### dependent matrices
@@ -92,7 +92,15 @@ genMtx <- function(){
   upsetPoints <<- t(crossprod(upsetMatrix[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2) +
                       crossprod(upsetDiagMatrix[selectRowsPrem,selectRowsPrem,  drop = F], (1 - simOutcomes2)))
 
+  
+  altUpsetPoints <<- t(crossprod(altUpsets[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2)) 
+
+  altUpsetPoints2 <<- t(crossprod(altUpsets2[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2) +
+                      crossprod(altUpsetsRow[selectRowsPrem,selectRowsPrem,  drop = F], (1 - simOutcomes2)))
+  
   stratMatrix <<- matrix(cbind(myPoints[resultIndex], upsetPoints[resultIndex,]), nrow = 2000)
+  
+  altStratMatrix <<- matrix(cbind(altUpsetPoints[resultIndex,], altUpsetPoints2[resultIndex,]), nrow = 2000)
 
 }
 
@@ -139,13 +147,21 @@ calcWinners <- function(numberFans = numFans){
   totalPointsMatrix <<- totalPointsIter[, 1:numberFans] #totalPointsMatrix[1:10,]
 
   rankMatrix <<- apply(stratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix)
-
+  altRankMatrix <<- apply(altStratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix)
+  
 
   stratWins <<- colSums(rankMatrix[, 1:14] == 1)
   stratPlace <<- colSums(rankMatrix[, 1:14] == 2)
   stratShow <<- colSums(rankMatrix[, 1:14] == 3)
+  
+  altStratWins <<- colSums(altRankMatrix == 1)
+  altStratPlace <<- colSums(altRankMatrix == 2)
+  altStratShow <<- colSums(altRankMatrix == 3)
+  
 
   resultsMatrix <<- as.matrix(cbind(stratWins, stratPlace, stratShow), nrow = 6, ncol = 3) * 17.0 / maxIter
+  altResultsMatrix <<- as.matrix(cbind(altStratWins, altStratPlace, altStratShow), nrow = 6, ncol = 3) * 17.0 / maxIter
+  
   resultsMatrix
 }
 
@@ -156,6 +172,11 @@ computeWinnings <- function(resultsMatrix, payouts = c(100, 0, 0)) {
                            "Fav-10", "Fav-11", "Fav-12")
   rownames(resultsMatrix) <- colnames(winnings)
   winnings
+}
+
+computeAltWinnings <- function(altResultsMatrix, payouts = c(100, 0, 0)) {
+  altWinnings <- round(as.data.frame(t((altResultsMatrix %*% payouts))), 1)
+  altWinnings
 }
 
 countITM <- function(resultsMatrix, payouts = c(100, 0, 0)) {

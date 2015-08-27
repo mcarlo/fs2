@@ -3,25 +3,29 @@ library(shiny); library(scales)
 load("useWeeklyFile.RData")
 
 # Define a server for the Shiny app
-shinyServer(function(input, output) { # input <- data.frame(players = 250, first = 225, second = 125, third = 50)
+shinyServer(function(input, output) { # input <- data.frame(players = 100, first = 100, second = 75, third = 50)
 
   results <- reactive({calcWinners(input$players)})
+  #results <- calcWinners(input$players)
 
   winDollars <- reactive({round(as.data.frame(t((results() %*% c(input$first, input$second, input$third)))), 1)})
-
+  # winDollars <- round(as.data.frame(t((results %*% c(input$first, input$second, input$third)))), 1)
+  
   inTheMoney <- reactive({round(rowSums(results() %*% (1*(c(input$first, input$second, input$third) > 0))), 2)})
+  # inTheMoney <- round(rowSums(results %*% (1*(c(input$first, input$second, input$third) > 0))), 2)
 
   output$Winnings <- renderTable({
 
     data <- as.data.frame(cbind(gameRanks, favorites, strategies[,order(-winDollars()[1,])[1:3]]))
-
+    # data <- as.data.frame(cbind(gameRanks, favorites, strategies[,order(-winDollars[1,])[1:3]]))
+    
     colnames(data) <- c("Confidence", "$ Favorites", "$1st","$2nd","$3rd")
     data
   })
 
   output$exp1 <- renderText({
-
     sapply(winDollars()[1,order(-winDollars())], dollar)[1]
+    # sapply(winDollars[1,order(-winDollars)], dollar)[1]
   })
 
   output$top1 <- renderText({round(results()[order(-winDollars()), 1][1], 2)})
@@ -73,7 +77,8 @@ shinyServer(function(input, output) { # input <- data.frame(players = 250, first
   output$ITM <- renderTable({
 
     dataI1 <- as.data.frame(cbind(gameRanks, favorites, strategies[,order(-inTheMoney())[1:3]]))
-
+    #dataI1 <- as.data.frame(cbind(gameRanks, favorites, strategies[,order(-inTheMoney[1:3]])))
+    
     colnames(dataI1) <- c("Confidence", "Favorites", "Most Frequent", "2nd", "3rd")
     dataI1
   })
