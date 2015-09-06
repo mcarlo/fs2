@@ -7,43 +7,43 @@ processFile <- function(weekFilename){
 
   #setwd("~/GitHub/fs2")
   weekFile <- read.csv(weekFilename, stringsAsFactors = F)# "2015week01straight.csv", stringsAsFactors = F)
-  
+
 
   # weekFile <<- read.csv(weekFilename, stringsAsFactors = F, colClasses = c("character", "numeric", "integer",
                                                                           #"numeric", "numeric", "numeric", "numeric",
                                                                           #"character"))
   games <<- length(weekFile$Confidence)
   gameRanks <<- games:1
-  
-  weekFile <<- weekFile[order(-weekFile$Confidence),]
-  
+
+  weekFileConf <<- weekFile[order(-weekFile$Confidence),]
+
 
 #   if (any(rank(weekFile$Confidence) != games:1)){
 #     weekFile <<- weekFile[order(-weekFile$Confidence),]
 #   }
 
-  winProb <<- weekFile$WinProbability
+  winProb <<- weekFileConf$WinProbability
 
   if (max(winProb) > 1) {winProb <<- winProb/100.0}
 
-  favorites <<- weekFile$Victor
+  favorites <<- weekFileConf$Victor
   strategies <<- matrix(rep(favorites, 14), ncol = 14)
 
   # simulate whether fans pick the favorite
-  fanProb <<- weekFile$FanProb
+  fanProb <<- weekFileConf$FanProb
 
   # simulate favorite confidence and underdog confidence
-  favConf <<- weekFile$FavConf
-  dogConf <<- weekFile$DogConf
-  
-  dogs <<- weekFile$Underdog
+  favConf <<- weekFileConf$FavConf
+  dogConf <<- weekFileConf$DogConf
+
+  dogs <<- weekFileConf$Underdog
 
 #   oppLabel <- function(c){paste0(c, "'s opponent")}
 #   dogs <<- sapply(favorites, oppLabel)
 #   if(dim(weekFile)[2] == 8) {dogs <<- weekFile$Underdog}
-  
+
 #   suppressMessages(suppressWarnings(library(data.table)))
-#   
+#
 #   weekFileDT <<- data.table(weekFile, key = Victor)
 
   #save.image("procFile.RData")
@@ -99,14 +99,14 @@ genMtx <- function(){
   upsetPoints <<- t(crossprod(upsetMatrix[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2) +
                       crossprod(upsetDiagMatrix[selectRowsPrem,selectRowsPrem,  drop = F], (1 - simOutcomes2)))
 
-  
-  altUpsetPoints <<- t(crossprod(altUpsets[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2)) 
+
+  altUpsetPoints <<- t(crossprod(altUpsets[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2))
 
   altUpsetPoints2 <<- t(crossprod(altUpsets2[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2) +
                       crossprod(altUpsetsRow[selectRowsPrem,selectRowsPrem,  drop = F], (1 - simOutcomes2)))
-  
+
   stratMatrix <<- matrix(cbind(myPoints[resultIndex], upsetPoints[resultIndex,]), nrow = 2000)
-  
+
   altStratMatrix <<- matrix(cbind(altUpsetPoints[resultIndex,], altUpsetPoints2[resultIndex,]), nrow = 2000)
 
 }
@@ -155,20 +155,20 @@ calcWinners <- function(numberFans = numFans){
 
   rankMatrix <<- apply(stratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix)
   altRankMatrix <<- apply(altStratMatrix, 2, rankVinM_Q, pointsMtrx = totalPointsMatrix)
-  
+
 
   stratWins <<- colSums(rankMatrix[, 1:14] == 1)
   stratPlace <<- colSums(rankMatrix[, 1:14] == 2)
   stratShow <<- colSums(rankMatrix[, 1:14] == 3)
-  
+
   altStratWins <<- colSums(altRankMatrix == 1)
   altStratPlace <<- colSums(altRankMatrix == 2)
   altStratShow <<- colSums(altRankMatrix == 3)
-  
+
 
   resultsMatrix <<- as.matrix(cbind(stratWins, stratPlace, stratShow), nrow = 6, ncol = 3) * 17.0 / maxIter
   altResultsMatrix <<- as.matrix(cbind(altStratWins, altStratPlace, altStratShow), nrow = 6, ncol = 3) * 17.0 / maxIter
-  
+
   resultsMatrix
 }
 

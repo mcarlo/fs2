@@ -5,7 +5,7 @@ shinyUI(fluidPage(
     titlePanel("WinThatPool"),
 
     # tags$head(includeScript("google-analytics.js")),
-    
+
     sidebarLayout(
       sidebarPanel(
         # Create a new Row in the UI for selectInputs
@@ -16,7 +16,7 @@ shinyUI(fluidPage(
        column(6, numericInput("players", label = NA, min = 5,
                               max = 250, step = 5, value = 100)
               )
-       
+
        # )
      ),
      fluidRow(
@@ -37,20 +37,17 @@ shinyUI(fluidPage(
     mainPanel(
   # Create a new row for the table.
       fluidRow(
-      column(4,
+      column(6,
              h4("Highest simulated payout"),
              tableOutput(outputId="expSlate1")
-      ),
+             ),
       column(6,
-             p("These picks averaged the highest payouts in WinThatPool!'s 
-simulations of this week's outcomes."),
-             br(),
-             p("Use the controls to change the Number of Players, and the
-                   weekly payouts for First, Second, and Third place to see if the
-               picks change.")
-             )),
-      column(6,
-             p("These are WinThatPool's recommended picks for a season-long prize. They are listed here for comparison purposes.")
-             ))
+             h4("Most often in the money"),
+             tableOutput(outputId="ITM1")
+
+
+
+      ))
     )
+  )
 ))

@@ -1,10 +1,10 @@
 rm(list = ls())
 library(shiny); library(scales)
-setwd("D:/Documents/GitHub/fs2")
+setwd("C:/Users/Anichini/Documents/GitHub/fs2") #"D:/Documents/GitHub/fs2")
 load("useWeeklyFile.RData")
 
 # Define a server for the Shiny app
-shinyServer(function(input, output) { # input <- data.frame(players = 100, first = 100, second = 75, third = 50)
+shinyServer(function(input, output) { # input <- data.frame(players = 25, first = 100, second = 0, third = 0)
 
   results <- reactive({resultsLists[[2 * input$players/5]]})
   #results <- reactive({calcWinners(input$players)})
@@ -12,7 +12,7 @@ shinyServer(function(input, output) { # input <- data.frame(players = 100, first
 
   winDollars <- reactive({round(as.data.frame(t((results() %*% c(input$first, input$second, input$third)))), 1)})
   # winDollars <- round(as.data.frame(t((results %*% c(input$first, input$second, input$third)))), 1)
-  
+
   inTheMoney <- reactive({round(rowSums(results() %*% (1*(c(input$first, input$second, input$third) > 0))), 2)})
   # inTheMoney <- round(rowSums(results %*% (1*(c(input$first, input$second, input$third) > 0))), 2)
 
@@ -20,7 +20,7 @@ shinyServer(function(input, output) { # input <- data.frame(players = 100, first
 
     data <- as.data.frame(cbind(gameRanks, favorites, strategies[,order(-winDollars()[1,])[1:3]]))
     # data <- as.data.frame(cbind(gameRanks, favorites, strategies[,order(-winDollars[1,])[1:3]]))
-    
+
     colnames(data) <- c("Confidence", "$ Favorites", "$1st","$2nd","$3rd")
     data
   })
@@ -80,7 +80,7 @@ shinyServer(function(input, output) { # input <- data.frame(players = 100, first
 
     dataI1 <- as.data.frame(cbind(gameRanks, favorites, strategies[,order(-inTheMoney())[1:3]]))
     #dataI1 <- as.data.frame(cbind(gameRanks, favorites, strategies[,order(-inTheMoney[1:3]])))
-    
+
     colnames(dataI1) <- c("Confidence", "Favorites", "Most Frequent", "2nd", "3rd")
     dataI1
   })
@@ -89,7 +89,7 @@ shinyServer(function(input, output) { # input <- data.frame(players = 100, first
 
     dataI1 <- as.data.frame(cbind(gameRanks, strategies[,order(-inTheMoney())[1]]))
 
-    colnames(dataI1) <- c("Confidence", "Slate 1")
+    colnames(dataI1) <- c("Confidence", "Pick")
     dataI1
   })
   output$ITM2 <- renderTable({
