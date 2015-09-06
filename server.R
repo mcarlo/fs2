@@ -1,11 +1,13 @@
 rm(list = ls())
 library(shiny); library(scales)
+setwd("D:/Documents/GitHub/fs2")
 load("useWeeklyFile.RData")
 
 # Define a server for the Shiny app
 shinyServer(function(input, output) { # input <- data.frame(players = 100, first = 100, second = 75, third = 50)
 
-  results <- reactive({calcWinners(input$players)})
+  results <- reactive({resultsLists[[2 * input$players/5]]})
+  #results <- reactive({calcWinners(input$players)})
   #results <- calcWinners(input$players)
 
   winDollars <- reactive({round(as.data.frame(t((results() %*% c(input$first, input$second, input$third)))), 1)})
@@ -49,7 +51,7 @@ shinyServer(function(input, output) { # input <- data.frame(players = 100, first
   output$expSlate1 <- renderTable({
     data1 <- as.data.frame(cbind(gameRanks, strategies[, order(-winDollars())][, 1]))
 
-    colnames(data1) <- c("Confidence", "Team")
+    colnames(data1) <- c("Confidence", "Pick")
     data1
   }, include.rownames = F)
 
@@ -140,5 +142,10 @@ shinyServer(function(input, output) { # input <- data.frame(players = 100, first
 
   })
 
+  output$Week <- renderTable({
+    datawk <- as.data.frame(cbind(gameRanks, weekFile$Victor, favorites))
+    colnames(datawk) <- c("Confidence", "Game", "Victor")
+    datawk
+    })
 
 })

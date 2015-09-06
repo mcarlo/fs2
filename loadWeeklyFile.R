@@ -4,7 +4,7 @@ load("fansimsSkeleton.RData")
 load("altStuff.RData")
 source("data_to_load.R") #getwd()
 
-processFile("2015week01.csv")
+processFile("D:/WTP/WEEK01_2015.csv") #"2014week15.csv")
 genMtx() #strategies
 simParams()
 littleSim()
@@ -12,12 +12,12 @@ littleSim()
 popConfList <- function(size){list(size, calcWinners(size))}
 results05 <- popConfList(5)
 
-fanSizes <- seq(5, 250, by = 5)
+fanSizes <- seq(5, 100, by = 5)
 
-resultsLists <- rep(results05, 50)
+resultsLists <- rep(results05, 20)
 
 confTactics <- function(){
-  for(i in 2:50)  {
+  for(i in 2:20)  {
     
     size <- fanSizes[i]
     genList <- popConfList(size)

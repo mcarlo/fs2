@@ -6,18 +6,23 @@ processFile <- function(weekFilename){
   #
 
   #setwd("~/GitHub/fs2")
+  weekFile <- read.csv(weekFilename, stringsAsFactors = F)# "2015week01straight.csv", stringsAsFactors = F)
+  
 
-  weekFile <<- read.csv(weekFilename, stringsAsFactors = F, colClasses = c("character", "numeric", "integer",
-                                                                          "numeric", "numeric", "numeric", "numeric",
-                                                                          "character"))
+  # weekFile <<- read.csv(weekFilename, stringsAsFactors = F, colClasses = c("character", "numeric", "integer",
+                                                                          #"numeric", "numeric", "numeric", "numeric",
+                                                                          #"character"))
   games <<- length(weekFile$Confidence)
   gameRanks <<- games:1
+  
+  weekFile <<- weekFile[order(-weekFile$Confidence),]
+  
 
-  if (any(rank(weekFile$Confidence) != games:1)){
-    weekFile <<- weekFile[order(-weekFile$Confidence),]
-  }
+#   if (any(rank(weekFile$Confidence) != games:1)){
+#     weekFile <<- weekFile[order(-weekFile$Confidence),]
+#   }
 
-  winProb <<- weekFile[, 2]
+  winProb <<- weekFile$WinProbability
 
   if (max(winProb) > 1) {winProb <<- winProb/100.0}
 
@@ -30,10 +35,12 @@ processFile <- function(weekFilename){
   # simulate favorite confidence and underdog confidence
   favConf <<- weekFile$FavConf
   dogConf <<- weekFile$DogConf
+  
+  dogs <<- weekFile$Underdog
 
-  oppLabel <- function(c){paste0(c, "'s opponent")}
-  dogs <<- sapply(favorites, oppLabel)
-  if(dim(weekFile)[2] == 8) {dogs <<- weekFile$Underdog}
+#   oppLabel <- function(c){paste0(c, "'s opponent")}
+#   dogs <<- sapply(favorites, oppLabel)
+#   if(dim(weekFile)[2] == 8) {dogs <<- weekFile$Underdog}
   
 #   suppressMessages(suppressWarnings(library(data.table)))
 #   
