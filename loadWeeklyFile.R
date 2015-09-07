@@ -4,7 +4,8 @@ load("fansimsSkeleton.RData")
 load("altStuff.RData")
 source("data_to_load.R") #getwd()
 
-processFile("~/WEEK01_2015.csv")  #("D:/WTP/WEEK01_2015.csv") #"2014week15.csv")
+#processFile("~/WEEK01_2015.csv")  #
+processFile("D:/WTP/WEEK01_2015.csv") #"2014week15.csv")
 genMtx() #strategies
 simParams()
 littleSim()
@@ -37,4 +38,4 @@ confTactics <- function(startList, maxSize = 100){
 }
 system.time(resultsLists <- confTactics(results05, 250))
 
-save(resultsLists, gameRanks, weekFileConf, file = "useWeeklyFile.RData")
+save(resultsLists, gameRanks, strategies, weekFileConf, file = "useWeeklyFile.RData")
