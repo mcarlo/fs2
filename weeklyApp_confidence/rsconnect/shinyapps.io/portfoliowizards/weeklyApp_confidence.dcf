@@ -1,8 +1,8 @@
 name: weeklyApp_confidence
 account: portfoliowizards
 server: shinyapps.io
-bundleId: 259951
+bundleId: 262212
 url: https://portfoliowizards.shinyapps.io/weeklyApp_confidence
-when: 1441656292.48035
+when: 1441900624.79024
 asMultiple: FALSE
 asStatic: FALSE
