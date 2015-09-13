@@ -6,7 +6,7 @@ processFile <- function(weekFilename){
   #
 
   #setwd("~/GitHub/fs2")
-  weekFile <- read.csv(weekFilename, stringsAsFactors = F)# "2015week01straight.csv", stringsAsFactors = F)
+  weekFile <- read.csv(weekFilename, stringsAsFactors = F)# "2014week01straight.csv", stringsAsFactors = F)
 
 
   # weekFile <<- read.csv(weekFilename, stringsAsFactors = F, colClasses = c("character", "numeric", "integer",
@@ -58,6 +58,46 @@ calcPoints <- function(rankVec, outcomeMatrix = simOutcomes2){
   pointVec <- as.vector(t(crossprod(rankVec, outcomeMatrix)))
 }
 
+conditionGames <- function(nGames){
+  if (nGames == 15){
+    simDogs <<- simDogs15
+    simFavs <<- simFavs15
+    simOutcomes2 <<- simOutcomes2_15
+    simPicks <<- simPicks15
+    simplayerCols <<- simplayerCols15
+    simPrior <<- simPrior15
+    simRand <<- simRand15
+    simRaw <<- simRaw15
+    upsetMatrix <<- upsetMatrix15
+    upsetDiagMatrix <<- upsetDiagMatrix15
+    fanIndex <<- fanIndex15
+  } else if (nGames == 14){
+    simDogs <<- simDogs14
+    simFavs <<- simFavs14
+    simOutcomes2 <<- simOutcomes2_14
+    simPicks <<- simPicks14
+    simplayerCols <<- simplayerCols14
+    simPrior <<- simPrior14
+    simRand <<- simRand14
+    simRaw <<- simRaw14
+    upsetMatrix <<- upsetMatrix14
+    upsetDiagMatrix <<- upsetDiagMatrix14
+    fanIndex <<- fanIndex14
+  } else if(nGames == 13){
+    simDogs <<- simDogs13
+    simFavs <<- simFavs13
+    simOutcomes2 <<- simOutcomes2_13
+    simPicks <<- simPicks13
+    simplayerCols <<- simplayerCols13
+    simPrior <<- simPrior13
+    simRand <<- simRand13
+    simRaw <<- simRaw13
+    upsetMatrix <<- upsetMatrix13
+    upsetDiagMatrix <<- upsetDiagMatrix13
+    fanIndex <<- fanIndex13
+  } 
+}
+
 genMtx <- function(){
   #rm(list = ls())
   #load("procFile.RData")
@@ -70,7 +110,7 @@ genMtx <- function(){
   selectRowsPrem <<- selectRows + (1 - prem) * premium
   for (j in 2:14){ # j = 2
     strategies[j - 1, j] <<- dogs[j-1] #weekFile[1:3, ]; favorites[j]
-    strategies[, j] <<- strategies[order(-(upsetMatrix[selectRowsPrem, selectRowsPrem] + upsetDiagMatrix[selectRowsPrem, selectRowsPrem])[ , j - 1]), j]
+    strategies[, j] <<- strategies[order(-(upsetMatrix[selectRows, selectRows] + upsetDiagMatrix[selectRows, selectRows])[ , j - 1]), j]
   }
   #strategies <<- strategies
 
@@ -96,14 +136,14 @@ genMtx <- function(){
   myRanks <<- rank(winProb, ties.method = "random")+premiumPts
   myPoints <<- calcPoints(myRanks)
 
-  upsetPoints <<- t(crossprod(upsetMatrix[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2) +
-                      crossprod(upsetDiagMatrix[selectRowsPrem,selectRowsPrem,  drop = F], (1 - simOutcomes2)))
+  upsetPoints <<- t(crossprod(upsetMatrix[selectRows,selectRows,  drop = F], simOutcomes2) +
+                      crossprod(upsetDiagMatrix[selectRows,selectRows,  drop = F], (1 - simOutcomes2)))
 
 
-  altUpsetPoints <<- t(crossprod(altUpsets[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2))
+  altUpsetPoints <<- t(crossprod(altUpsets[selectRows,selectRows,  drop = F], simOutcomes2))
 
-  altUpsetPoints2 <<- t(crossprod(altUpsets2[selectRowsPrem,selectRowsPrem,  drop = F], simOutcomes2) +
-                      crossprod(altUpsetsRow[selectRowsPrem,selectRowsPrem,  drop = F], (1 - simOutcomes2)))
+  altUpsetPoints2 <<- t(crossprod(altUpsets2[selectRows,selectRows,  drop = F], simOutcomes2) +
+                      crossprod(altUpsetsRow[selectRows,selectRows,  drop = F], (1 - simOutcomes2)))
 
   stratMatrix <<- matrix(cbind(myPoints[resultIndex], upsetPoints[resultIndex,]), nrow = 2000)
 

@@ -3,7 +3,8 @@ library(shiny); library(scales)
 require(googleVis)
 #setwd("C:/Users/Anichini/Documents/GitHub/fs2") #
 #setwd("D:/Documents/GitHub/fs2")
-load("useWeeklyFile.RData")
+load("useWeeklyFile13.RData")
+nGames <- length(gameRanks)
 
 favorites <- weekFileConf$Victor
 
@@ -43,9 +44,9 @@ shinyServer(function(input, output) { # input <- data.frame(players = 25, first 
     colnames(data1) <- c("Confidence", "Pick")
     maxPoints <- gvisTable(data1,
                            options=list(page='enable', #height=500, width = 300,
-                                        showRowNumber = F, pageSize = 16,
+                                      showRowNumber = F, pageSize = nGames,
                                         cssClassNames = "{headerRow: 'myTableHeadrow', 
-                                        tableRow: 'myTablerow'}", 
+                                        tableRow: 'myTablerow'}",
                                         alternatingRowStyle = TRUE, page = 'disable'), 
                            chartid = "maxPointsTable")
     maxPoints
@@ -66,7 +67,7 @@ shinyServer(function(input, output) { # input <- data.frame(players = 25, first 
     colnames(dataI1) <- c("Confidence", "Pick")
     mostFreq <- gvisTable(dataI1,
                            options=list(page='enable', #height=500, width = 300,
-                                        showRowNumber = F, pageSize = 16,
+                                        showRowNumber = F, pageSize = nGames,
                                         cssClassNames = "{headerRow: 'myTableHeadrow', 
                                         tableRow: 'myTablerow'}", 
                                         alternatingRowStyle = TRUE, page = 'disable'), 

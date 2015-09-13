@@ -5,7 +5,22 @@ load("altStuff.RData")
 source("data_to_load.R") #getwd()
 
 #processFile("~/WEEK01_2015.csv")  #
-#processFile("D:/WTP/WEEK01_2015.csv") #"2014week15.csv")
+processFile("D:/WTP/WEEK01_2015test13.csv") #"2014week15.csv")
+
+simDogs <- simDogs16
+simFavs <- simFavs16
+simOutcomes2 <- simOutcomes2_16
+simPicks <- simPicks16
+simplayerCols <- simplayerCols16
+simPrior <- simPrior16
+simRand <- simRand16
+simRaw <- simRaw16
+upsetMatrix <- upsetMatrix16
+upsetDiagMatrix <- upsetDiagMatrix16
+fanIndex <- fanIndex16
+
+conditionGames(nGames = games)
+
 genMtx() #strategies
 simParams()
 littleSim()
@@ -37,9 +52,5 @@ confTactics <- function(startList, maxSize = 100){
   outList
 }
 system.time(resultsLists <- confTactics(results05))
-
-
-
-save(resultsLists, gameRanks, strategies, weekFileConf, file = "weeklyApp_confidence/useWeeklyFile.RData")
-
-#resultsListsCurrent <- resultsLists
+setwd("D:/Documents/GitHub/fs2/weeklyApp_confidence")
+save(resultsLists, gameRanks, strategies, weekFileConf, file = "useWeeklyFile13.RData")
