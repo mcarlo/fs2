@@ -3,7 +3,7 @@ library(shiny); library(scales)
 require(googleVis)
 #setwd("C:/Users/Anichini/Documents/GitHub/fs2") #
 #setwd("D:/Documents/GitHub/fs2")
-load("useWeeklyFile13.RData")
+load("useWeeklyFile2015_02.RData")
 nGames <- length(gameRanks)
 
 favorites <- weekFileConf$Victor
@@ -37,22 +37,22 @@ shinyServer(function(input, output) { # input <- data.frame(players = 25, first 
     data1
   }, include.rownames = F)
 
-  
+
   output$gSlate1 <- renderGvis({
     data1 <- as.data.frame(cbind(gameRanks, strategies[, order(-winDollars())][, 1]))
-    
+
     colnames(data1) <- c("Confidence", "Pick")
     maxPoints <- gvisTable(data1,
                            options=list(page='enable', #height=500, width = 300,
                                       showRowNumber = F, pageSize = nGames,
-                                        cssClassNames = "{headerRow: 'myTableHeadrow', 
+                                        cssClassNames = "{headerRow: 'myTableHeadrow',
                                         tableRow: 'myTablerow'}",
-                                        alternatingRowStyle = TRUE, page = 'disable'), 
+                                        alternatingRowStyle = TRUE, page = 'disable'),
                            chartid = "maxPointsTable")
     maxPoints
-    
+
   })
-  
+
   output$ITM1 <- renderTable({
 
     dataI1 <- as.data.frame(cbind(gameRanks, strategies[,order(-inTheMoney())[1]]))
@@ -60,20 +60,20 @@ shinyServer(function(input, output) { # input <- data.frame(players = 25, first 
     colnames(dataI1) <- c("Confidence", "Pick")
     dataI1
   }, include.rownames = F)
-  
+
   output$gITM1 <- renderGvis({
-    dataI1 <- as.data.frame(cbind(gameRanks, strategies[,order(-inTheMoney())[1]]))    
-    
+    dataI1 <- as.data.frame(cbind(gameRanks, strategies[,order(-inTheMoney())[1]]))
+
     colnames(dataI1) <- c("Confidence", "Pick")
     mostFreq <- gvisTable(dataI1,
                            options=list(page='enable', #height=500, width = 300,
                                         showRowNumber = F, pageSize = nGames,
-                                        cssClassNames = "{headerRow: 'myTableHeadrow', 
-                                        tableRow: 'myTablerow'}", 
-                                        alternatingRowStyle = TRUE, page = 'disable'), 
+                                        cssClassNames = "{headerRow: 'myTableHeadrow',
+                                        tableRow: 'myTablerow'}",
+                                        alternatingRowStyle = TRUE, page = 'disable'),
                            chartid = "mostFreqTable")
     mostFreq
-    
+
 })
-  
+
 })

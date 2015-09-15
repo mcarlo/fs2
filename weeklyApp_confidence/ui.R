@@ -13,16 +13,16 @@ shinyUI(fluidPage(
            sliderInput("players", "   Number of Players in Pool:", min = 5,
                        max = 100, step = 5, value = 35),
            p("Weekly payout:"),
-           numericInput("first", "1st", min = 10, 
+           numericInput("first", "1st", min = 10,
                         max = 250, step = 5, value = 100),
-           numericInput("second", "2nd", min = 0, 
+           numericInput("second", "2nd", min = 0,
                         max = 250, step = 5, value = 50),
-           numericInput("third", "3rd", min = 0, 
+           numericInput("third", "3rd", min = 0,
                         max = 250, step = 5, value = 25),
 
-           
-           h4("Highest average payoff"),
-           p("Final update 9/10/16 9:00a PDT"),
+
+           h4("Highest average payoff, Week 2"),
+           p("Updated 9/15/16 10:00a PDT"),
            htmlOutput(outputId="gSlate1")
            ,
            tags$head(tags$style(type="text/css",
@@ -44,9 +44,9 @@ shinyUI(fluidPage(
 # Define the overall UI
 # shinyUI(fluidPage(
 #     includeCSS("styles.css"),
-# 
+#
 #     # tags$head(includeScript("google-analytics.js")),
-# 
+#
 #     sidebarLayout(
 #       div(class="set1",sidebarPanel(
 #         # Create a new Row in the UI for selectInputs
@@ -57,7 +57,7 @@ shinyUI(fluidPage(
 #               sliderInput("players", label = NA, min = 5,
 #                               max = 100, step = 5, value = 35)
 #               )
-# 
+#
 #        # )
 #      ),
 #      fluidRow(
@@ -77,7 +77,7 @@ shinyUI(fluidPage(
 #                          max = 250, step = 5, value = 25)
 #        )
 #       ))),
-# 
+#
 #     mainPanel(
 #   # Create a new row for the table.
 #       fluidRow(
@@ -101,7 +101,7 @@ shinyUI(fluidPage(
 #       )
 #     )
 #   ),
-# 
+#
 # tags$head(includeScript("google-analytics.js"))
-# 
+#
 # ))
