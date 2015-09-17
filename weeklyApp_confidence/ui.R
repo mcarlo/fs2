@@ -22,7 +22,7 @@ shinyUI(fluidPage(
 
 
            h4("Highest average payoff, Week 2"),
-           p("Updated 9/15/16 10:00a PDT"),
+           p("Final update 9/17/16 8:30a PDT"),
            htmlOutput(outputId="gSlate1")
            ,
            tags$head(tags$style(type="text/css",
