@@ -3,7 +3,7 @@ library(shiny); library(scales)
 require(googleVis)
 #setwd("C:/Users/Anichini/Documents/GitHub/fs2") #
 #setwd("D:/Documents/GitHub/fs2")
-load("useWeeklyFile2015_02.RData")
+load("useWeeklyFile2015_04.RData")
 nGames <- length(gameRanks)
 
 favorites <- weekFileConf$Victor

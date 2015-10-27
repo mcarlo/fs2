@@ -1,8 +1,8 @@
 name: weeklyApp_confidence
 account: portfoliowizards
 server: shinyapps.io
-bundleId: 267639
+bundleId: 299281
 url: https://winthatpool.shinyapps.io/weeklyApp_confidence
-when: 1442503624.31963
+when: 1445985670.33514
 asMultiple: FALSE
 asStatic: FALSE
